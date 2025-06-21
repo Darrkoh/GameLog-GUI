@@ -1,4 +1,4 @@
-use eframe::{egui::{self, CentralPanel, Context, TopBottomPanel, Vec2}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, FontId, RichText, TopBottomPanel, Vec2}, App, Frame};
 
 // The app
 pub struct GameLog { 
@@ -25,7 +25,6 @@ impl App for GameLog {
 
             // TOP BAR BUTTONS
             ui.horizontal(|ui| {
-
                 // Buttons are set to appear at the left most available point
                 // UNCOMMENT TO ADD A BUTTON TO APP BAR WITH SPACER
                     // ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| { });
@@ -36,17 +35,20 @@ impl App for GameLog {
                     let label = if self.dark_mode { "Light Mode" } else { "Dark Mode" };
 
                     if ui.add(egui::Button::new(label)
-                        .min_size(Vec2::new(100.0, 40.0 )))
+                        .min_size(Vec2::new(100.0, 50.0 )))
                     .clicked() {
                         self.dark_mode = !self.dark_mode;
                     }
                 });
             });
-
         });
 
+        // Contents of the window
         CentralPanel::default().show(ctx, |ui| {
-            ui.label("Hello World!");
+            ui.vertical_centered(|ui| {
+                ui.add_space(30.0);
+                ui.label(RichText::new("WELCOME TO YOUR GAME LOG!").font(FontId::proportional(60.0)).underline());
+            });
         });
     }
 }
