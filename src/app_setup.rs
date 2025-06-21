@@ -23,16 +23,28 @@ impl App for GameLog {
                 ctx.set_visuals(egui::Visuals::light());
             }
 
-            // Otherwise Text in button isn't centered. This also puts buttons to the right of the Top Bar
-            ui.with_layout(egui::Layout::centered_and_justified(egui::Direction::RightToLeft), |ui| {
+            ui.horizontal(|ui| {
 
-                // Purpose of this is so we can have multiple buttons aligned horizontally. Without it, the first button created takes up the whole top bar with no room for the others
-                ui.horizontal(|ui|
-                    {
+                // Buttons are set to appear at the left most available point
+                ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
+
+                    if ui.add(egui::Button::new("Placeholder Button (Does Nothing)")
+                        .min_size(Vec2::new(100.0, 40.0 )))
+                    .clicked() {
+                        self.dark_mode = self.dark_mode;
+                    }
+
+                });
+
+                // Spacer that takes up all space between left and right
+                ui.add_space(ui.available_width());
+
+                // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     let label = if self.dark_mode { "Light Mode" } else { "Dark Mode" };
 
                     if ui.add(egui::Button::new(label)
-                        .min_size(Vec2::new(60.0, 40.0 )))
+                        .min_size(Vec2::new(100.0, 40.0 )))
                     .clicked() {
                         self.dark_mode = !self.dark_mode;
                     }
