@@ -23,21 +23,13 @@ impl App for GameLog {
                 ctx.set_visuals(egui::Visuals::light());
             }
 
+            // TOP BAR BUTTONS
             ui.horizontal(|ui| {
 
                 // Buttons are set to appear at the left most available point
-                ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| {
-
-                    if ui.add(egui::Button::new("Placeholder Button (Does Nothing)")
-                        .min_size(Vec2::new(100.0, 40.0 )))
-                    .clicked() {
-                        self.dark_mode = self.dark_mode;
-                    }
-
-                });
-
-                // Spacer that takes up all space between left and right
-                ui.add_space(ui.available_width());
+                // UNCOMMENT TO ADD A BUTTON TO APP BAR WITH SPACER
+                    // ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| { });
+                    // ui.add_space(ui.available_width());
 
                 // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -50,6 +42,7 @@ impl App for GameLog {
                     }
                 });
             });
+
         });
 
         CentralPanel::default().show(ctx, |ui| {
