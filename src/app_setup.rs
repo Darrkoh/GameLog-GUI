@@ -1,4 +1,4 @@
-use eframe::{egui::{self, CentralPanel, Context}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, TopBottomPanel}, App, Frame};
 
 // The app
 pub struct GameLog { 
@@ -14,8 +14,8 @@ impl Default for GameLog {
 // Define the app's behvaiour and contents
 impl App for GameLog {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        CentralPanel::default().show(ctx, |ui| {
-            // Dark/Light mode toggle (Plan to move to somewhere else eventually)
+        TopBottomPanel::top("top_panel").min_height(30.0).show(ctx, |ui| {
+            // Dark/Light mode toggle (Plan to move to somewhere else eventually) \\
             if self.dark_mode {
                 ctx.set_visuals(egui::Visuals::dark());
             }
@@ -28,6 +28,10 @@ impl App for GameLog {
             if ui.button(label).clicked() {
                 self.dark_mode = !self.dark_mode;
             }
+        });
+
+        CentralPanel::default().show(ctx, |ui| {
+            ui.label("Hello World!");
         });
     }
 }
