@@ -2,14 +2,16 @@ use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextE
 use image::GenericImageView;
 
 
-// The app
+/// Stores the application's state, including UI settings and user input.
+/// 
+/// This struct holds texture assets, toggles for dark mode, and the current game search query.
 pub struct GameLog { 
-    pub dark_mode: bool, // Attribute for Toggling dark mode
+    pub dark_mode: bool, 
     pub assets: Vec<egui::TextureHandle>,
     pub search_game: String
 }
 
-// App settings on startup
+/// App settings on startup
 impl GameLog {
     /// Constructor to create app and load assets
     /// 
