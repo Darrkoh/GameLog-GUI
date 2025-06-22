@@ -53,6 +53,12 @@ impl App for GameLog {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         TopBottomPanel::top("top_panel").min_height(30.0).show(ctx, |ui| {
             // Dark/Light mode toggle (Plan to move to somewhere else eventually) \\
+            let dark_texture = &self.assets[0];
+            let size = egui::Vec2::new(35.0, 35.0);
+
+            // Create a SizedTexture from TextureHandle and size
+            let sized_dark_texture = egui::Image::new(dark_texture).max_size(size);
+
             if self.dark_mode {
                 ctx.set_visuals(egui::Visuals::dark());
             }
@@ -66,14 +72,6 @@ impl App for GameLog {
                 // UNCOMMENT TO ADD A BUTTON TO APP BAR WITH SPACER
                     // ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| { });
                     // ui.add_space(ui.available_width());
-
-                    
-
-                let dark_texture = &self.assets[0];
-                let size = egui::Vec2::new(35.0, 35.0);
-
-                // Create a SizedTexture from TextureHandle and size
-                let sized_dark_texture = egui::Image::new(dark_texture).max_size(size);
 
                 // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
