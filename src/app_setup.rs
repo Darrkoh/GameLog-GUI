@@ -1,4 +1,4 @@
-use eframe::{egui::{self, CentralPanel, ColorImage, Context, FontId, ImageButton, RichText, TextureHandle, TextureOptions, TopBottomPanel, Vec2}, epaint, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, FontId, RichText, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
 
@@ -76,7 +76,7 @@ impl App for GameLog {
                 // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
 
-                    if ui.add( egui::ImageButton::new(sized_dark_texture))
+                    if ui.add_sized(size, egui::ImageButton::new(sized_dark_texture))
                     .clicked() {
                         self.dark_mode = !self.dark_mode;
                     }
