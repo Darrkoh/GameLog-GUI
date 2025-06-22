@@ -1,11 +1,12 @@
-use eframe::{egui::{self, CentralPanel, Context, FontId, RichText, TextureHandle, TopBottomPanel}, App, Frame};
+use eframe::{egui::{self, Align, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
 
 // The app
 pub struct GameLog { 
     pub dark_mode: bool, // Attribute for Toggling dark mode
-    pub assets: Vec<egui::TextureHandle>
+    pub assets: Vec<egui::TextureHandle>,
+    pub search_game: String
 }
 
 // App settings on startup
@@ -13,8 +14,11 @@ impl GameLog {
     // Constructor to create app and load assets
     pub fn startup(ctx: &egui::Context)  -> Self {
         let assets = Self::load_assets_from_bytes(ctx); // Load in app assets upon app startup
+        let search_game: String = String::new(); // Used at startup to hold the contents of the app search bar
+
         Self { dark_mode: true, 
-                assets
+                assets,
+                search_game
             }
     }
 
@@ -52,13 +56,16 @@ impl GameLog {
 impl App for GameLog {
 
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        TopBottomPanel::top("top_panel").min_height(30.0).show(ctx, |ui| {
-            // Dark/Light mode toggle (Plan to move to somewhere else eventually) \\
+        TopBottomPanel::top("top_panel").exact_height(60.0).show(ctx, |ui| {
+            // Set the correct image depending on whether the appearance is currently light mode or dark mode
             let appearance_texture = if self.dark_mode {&self.assets[1]} else {&self.assets[0]};
-            let size = egui::Vec2::new(35.0, 35.0);
 
-            // Size the Images so theyre not taking up the whole goddamn screen
-            let sized_appearance_texture = egui::Image::new(appearance_texture).max_size(size);
+            // Content Sizes
+            let appearance_size = egui::Vec2::new(40.0, 40.0);
+            let search_size = egui::Vec2::new(300.0, 20.0);
+
+            // Image Sizeing so they're not taking up the whole goddamn screen
+            let sized_appearance_texture = egui::Image::new(appearance_texture).max_size(appearance_size);
 
             if self.dark_mode {
                 ctx.set_visuals(egui::Visuals::dark());
@@ -67,21 +74,34 @@ impl App for GameLog {
                 ctx.set_visuals(egui::Visuals::light());
             }
 
-            // TOP BAR BUTTONS
-            ui.horizontal(|ui| {
-                // Buttons are set to appear at the left most available point
-                
-                // UNCOMMENT TO ADD A BUTTON TO APP BAR WITH SPACER
-                    // ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| { });
-                    // ui.add_space(ui.available_width());
+            // TOP BAR CONTENT
+            ui.horizontal_centered(|ui|{
 
-                // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
-                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                        if ui.add_sized(size, egui::ImageButton::new(sized_appearance_texture))
-                        .clicked() {
-                            self.dark_mode = !self.dark_mode;
-                        }
-                 });
+                // Searching for a Game
+                ui.vertical_centered(|ui|{
+                    ui.label("Search For a Game:"); // Affordance, telling users what the search bar is for
+                    
+                    ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)); // Save user's search input
+
+                    // Tell users their input has been dettected (Feedback)
+                    if !self.search_game.is_empty() {
+                        ui.label(format!("You searched for: {}", self.search_game)); // Shows User the inputted text so far
+                        // Filter and display items here based on search_text
+                    }
+                    
+                    // Enforce a 50 character search limit so users can't break the layout. If a games name is over 50 characters then users will need to abbreviate it
+                    if self.search_game.len() > 50 {
+                        self.search_game.truncate(50);
+                    }  
+                });
+
+                // Dark/Light Mode toggle (End of the Top Bar)
+                ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui|{
+                    if ui.add_sized(appearance_size, egui::ImageButton::new(sized_appearance_texture))
+                    .clicked() {
+                        self.dark_mode = !self.dark_mode;
+                    }
+                });    
             });
         });
 
