@@ -1,4 +1,4 @@
-use eframe::{egui::{self, Align, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
 
@@ -81,18 +81,26 @@ impl App for GameLog {
                 ui.vertical_centered(|ui|{
                     ui.label("Search For a Game:"); // Affordance, telling users what the search bar is for
                     
-                    ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)); // Save user's search input
+                    let response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)); // Save user's search input
 
                     // Tell users their input has been dettected (Feedback)
                     if !self.search_game.is_empty() {
-                        ui.label(format!("You searched for: {}", self.search_game)); // Shows User the inputted text so far
+                        ui.label(format!("Currently Searching For: {}", self.search_game)); // Shows User the inputted text so far
                         // Filter and display items here based on search_text
                     }
                     
-                    // Enforce a 50 character search limit so users can't break the layout. If a games name is over 50 characters then users will need to abbreviate it
+                    // Enforce a 50 character search limit so users can't break the layout :D 
+                    // If a games name is over 50 characters then users will need to abbreviate it
                     if self.search_game.len() > 50 {
                         self.search_game.truncate(50);
-                    }  
+                    }
+
+                    // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
+                    // Right now i dont have this method so nothing really happens lol
+                    if response.lost_focus() && ui.input(|input| input.key_pressed(egui::Key::Enter ))
+                    {
+                        self.search_game = String::new(); // Clear input, ready for next input
+                    }
                 });
 
                 // Dark/Light Mode toggle (End of the Top Bar)
