@@ -22,8 +22,8 @@ impl GameLog {
     fn load_assets_from_bytes(ctx: &egui::Context) -> Vec<TextureHandle> {
 
         let asset_path = vec![
-            ("moon", include_bytes!("../assets/Moon_Crescent.png"))
-            // ("sun", include_bytes!("Add sun path when its added to assets"))
+            ("moon", &include_bytes!("../assets/Moon_Crescent.png")[..]), // [..] used to concert a fixed size array into a dynamic reference
+            ("sun", &include_bytes!("../assets/Sun.png")[..])
         ];
 
         asset_path
@@ -50,14 +50,15 @@ impl GameLog {
 
 // Define the app's behvaiour and contents
 impl App for GameLog {
+
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         TopBottomPanel::top("top_panel").min_height(30.0).show(ctx, |ui| {
             // Dark/Light mode toggle (Plan to move to somewhere else eventually) \\
-            let dark_texture = &self.assets[0];
+            let appearance_texture = if self.dark_mode {&self.assets[1]} else {&self.assets[0]};
             let size = egui::Vec2::new(35.0, 35.0);
 
-            // Create a SizedTexture from TextureHandle and size
-            let sized_dark_texture = egui::Image::new(dark_texture).max_size(size);
+            // Size the Images so theyre not taking up the whole goddamn screen
+            let sized_appearance_texture = egui::Image::new(appearance_texture).max_size(size);
 
             if self.dark_mode {
                 ctx.set_visuals(egui::Visuals::dark());
@@ -69,18 +70,18 @@ impl App for GameLog {
             // TOP BAR BUTTONS
             ui.horizontal(|ui| {
                 // Buttons are set to appear at the left most available point
+                
                 // UNCOMMENT TO ADD A BUTTON TO APP BAR WITH SPACER
                     // ui.with_layout(egui::Layout::left_to_right(egui::Align::Center), |ui| { });
                     // ui.add_space(ui.available_width());
 
                 // Dark mode toggle is an exception and is set to the end of the top bar at all times. This is because it will be familiar for users as many other websites do this
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-
-                    if ui.add_sized(size, egui::ImageButton::new(sized_dark_texture))
-                    .clicked() {
-                        self.dark_mode = !self.dark_mode;
-                    }
-                });
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        if ui.add_sized(size, egui::ImageButton::new(sized_appearance_texture))
+                        .clicked() {
+                            self.dark_mode = !self.dark_mode;
+                        }
+                 });
             });
         });
 
