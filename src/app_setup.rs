@@ -11,10 +11,14 @@ pub struct GameLog {
 
 // App settings on startup
 impl GameLog {
-    // Constructor to create app and load assets
+    /// Constructor to create app and load assets
+    /// 
+    ///  - 'dark_mode': Used for toggling dark mode
+    ///  - 'assets': Calls a method which loads assets in the 'assets' folder and turns them into textures to be used in the app
+    ///  - 'search_game': Used at startup to hold the contents of the app search bar
     pub fn startup(ctx: &egui::Context)  -> Self {
-        let assets = Self::load_assets_from_bytes(ctx); // Load in app assets upon app startup
-        let search_game: String = String::new(); // Used at startup to hold the contents of the app search bar
+        let assets = Self::load_assets_from_bytes(ctx);
+        let search_game: String = String::new(); 
 
         Self { dark_mode: true, 
                 assets,
@@ -22,8 +26,10 @@ impl GameLog {
             }
     }
 
-    // This function is implemented so all assets used in the app will be loaded in upon app startup and never need to be loaded up again, saving GPU resources and increasing processing speed
-    fn load_assets_from_bytes(ctx: &egui::Context) -> Vec<TextureHandle> {
+    /// Load embedded image assets into the app context upon startup
+    /// 
+    /// This results in not needing to constantly load in textures whenever we want to use them, saving GPU resources 
+    fn load_assets_from_bytes(ctx: &egui::Context) -> Vec<TextureHandle> { 
 
         let asset_path = vec![
             ("moon", &include_bytes!("../assets/Moon_Crescent.png")[..]), // [..] used to convert a fixed size array into a dynamic reference
@@ -52,7 +58,7 @@ impl GameLog {
     }
 }
 
-// Define the app's behvaiour and contents
+/// Define the app's Behaviour and contents
 impl App for GameLog {
 
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
@@ -79,20 +85,19 @@ impl App for GameLog {
 
                 // Searching for a Game
                 ui.vertical_centered(|ui|{
-                    ui.label("Search For a Game:"); // Affordance, telling users what the search bar is for
+                    ui.label("Search:"); // Affordance, telling users what the search bar is for
                     
-                    let response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)); // Save user's search input
+                    let response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)// Save user's search input
+                        .hint_text("Enter the Game's Name")
+                        .char_limit(30) // Enforce a 50 character search limit so users can't break the layout :D 
+                        .frame(true) // Frame appears upon cursor hover
+                        .horizontal_align(egui::Align::Center)
+                    ); 
 
                     // Tell users their input has been dettected (Feedback)
                     if !self.search_game.is_empty() {
                         ui.label(format!("Currently Searching For: {}", self.search_game)); // Shows User the inputted text so far
                         // Filter and display items here based on search_text
-                    }
-                    
-                    // Enforce a 50 character search limit so users can't break the layout :D 
-                    // If a games name is over 50 characters then users will need to abbreviate it
-                    if self.search_game.len() > 50 {
-                        self.search_game.truncate(50);
                     }
 
                     // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
