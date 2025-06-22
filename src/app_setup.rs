@@ -22,7 +22,7 @@ impl GameLog {
     fn load_assets_from_bytes(ctx: &egui::Context) -> Vec<TextureHandle> {
 
         let asset_path = vec![
-            ("moon", &include_bytes!("../assets/Moon_Crescent.png")[..]), // [..] used to concert a fixed size array into a dynamic reference
+            ("moon", &include_bytes!("../assets/Moon_Crescent.png")[..]), // [..] used to convert a fixed size array into a dynamic reference
             ("sun", &include_bytes!("../assets/Sun.png")[..])
         ];
 
