@@ -1,4 +1,4 @@
-use eframe::{egui::{self, CentralPanel, Color32, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
 
@@ -121,18 +121,16 @@ impl App for GameLog {
                         .frame(true) // Frame appears upon cursor hover
                         .horizontal_align(egui::Align::Center)
                         .vertical_align(egui::Align::Center)
-                        .
                     ); 
 
                     // Hide feedback message if user starts making the window smaller and theres a long search message
                     if (available_width >= min_width_for_search) || (self.search_game.len() <= 23)
                     {
-                        // Tell users their input has been dettected (Feedback)
+                        // Tell users their input has been detected (Feedback)
                         let feedback_message = egui::Label::new(
                             RichText::new(format!("Currently Searching For: {}", self.search_game))
                         ).wrap_mode(egui::TextWrapMode::Truncate); // No wrap as it isnt needed and results in pixel overflow
 
-                        
                         if !self.search_game.is_empty() {
                             ui.add(feedback_message);
                         }
@@ -149,9 +147,9 @@ impl App for GameLog {
                 ui.add_space(10.0);
 
                 egui::Frame::default()
-                    .fill(egui::Color32::DARK_GRAY)
+                    .fill(ui.visuals().extreme_bg_color)
                     .corner_radius(egui::CornerRadius::same(10))
-                    .stroke(egui::Stroke::new(3.0, egui::Color32::BLACK))
+                    .stroke(egui::Stroke::new(1.0, egui::Color32::BLACK))
                     .show(ui, |ui| {
                         let frame_size = egui::Vec2::new(600.0, 800.0);
                     
@@ -162,7 +160,7 @@ impl App for GameLog {
                         ui.label(RichText::new("PLACEHOLDER")
                             .size(20.0)
                             .strong()
-                            .color(egui::Color32::BLACK)
+                            .color(ui.visuals().text_color())
                         )
                     });
             });
