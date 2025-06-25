@@ -102,7 +102,7 @@ impl App for GameLog {
                     ); 
 
                     // Hide feedback message if user starts making the window smaller and theres a long search message
-                    if (available_width >= min_width_for_search) || (self.search_game.len() <= 25)
+                    if (available_width >= min_width_for_search) || (self.search_game.len() <= 23)
                     {
                         // Tell users their input has been dettected (Feedback)
                         let feedback_message = egui::Label::new(
