@@ -133,11 +133,30 @@ impl App for GameLog {
             });
         });
 
-        // Contents of the window
+        // Actual Contents of the window
         CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(30.0);
                 ui.label(RichText::new("WELCOME TO YOUR GAME LOG!").font(FontId::proportional(60.0)).underline());
+                ui.add_space(50.0);
+        
+                egui::Frame::default()
+                    .fill(egui::Color32::DARK_GRAY)
+                    .corner_radius(egui::CornerRadius::same(10))
+                    .stroke(egui::Stroke::new(3.0, egui::Color32::BLACK))
+                    .show(ui, |ui| {
+                        let frame_size = egui::Vec2::new(600.0, 800.0);
+                    
+                        // Content of frame. Will contain Game Log Info
+                        ui.set_min_size(frame_size); // Set Size of frame (Overritdes ui.vertical_centered in terms of taking up available space)
+                        ui.set_max_size(frame_size); // Need to set both of these so frame will always be the same size no matter the content
+                        
+                        ui.label(RichText::new("PLACEHOLDER")
+                            .size(20.0)
+                            .strong()
+                            .color(egui::Color32::BLACK)
+                        )
+                    });
             });
         });
     }
