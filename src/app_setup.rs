@@ -64,13 +64,17 @@ impl GameLog {
 impl App for GameLog {
 
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        TopBottomPanel::top("top_panel").exact_height(60.0).show(ctx, |ui| {
+        TopBottomPanel::top("top_panel").exact_height(70.0).show(ctx, |ui| {
+            // Variables for hiding ui elements depending on window size
+            let available_width = ui.available_size().x;
+            let min_width_for_search = 800.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
+
             // Set the correct image depending on whether the appearance is currently light mode or dark mode
             let appearance_texture = if self.dark_mode {&self.assets[1]} else {&self.assets[0]};
 
             // Content Sizes
             let appearance_size = egui::Vec2::new(40.0, 40.0);
-            let search_size = egui::Vec2::new(300.0, 20.0);
+            let search_size = egui::Vec2::new(300.0, 30.0);
 
             // Image Sizeing so they're not taking up the whole goddamn screen
             let sized_appearance_texture = egui::Image::new(appearance_texture).max_size(appearance_size);
@@ -91,15 +95,24 @@ impl App for GameLog {
                     
                     let response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)// Save user's search input
                         .hint_text("Enter the Game's Name")
-                        .char_limit(30) // Enforce a 50 character search limit so users can't break the layout :D 
+                        .char_limit(50) // Enforce a 50 character search limit so users can't break the layout :D 
                         .frame(true) // Frame appears upon cursor hover
                         .horizontal_align(egui::Align::Center)
+                        .vertical_align(egui::Align::Center)
                     ); 
 
-                    // Tell users their input has been dettected (Feedback)
-                    if !self.search_game.is_empty() {
-                        ui.label(format!("Currently Searching For: {}", self.search_game)); // Shows User the inputted text so far
-                        // Filter and display items here based on search_text
+                    // Hide feedback message if user starts making the window smaller
+                    if available_width >= min_width_for_search
+                    {
+                        // Tell users their input has been dettected (Feedback)
+                        let feedback_message = egui::Label::new(
+                            RichText::new(format!("Currently Searching For: {}", self.search_game))
+                        ).wrap_mode(egui::TextWrapMode::Truncate); // No wrap as it isnt needed and results in pixel overflow
+
+                        
+                        if !self.search_game.is_empty() {
+                            ui.add(feedback_message);
+                        }
                     }
 
                     // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
