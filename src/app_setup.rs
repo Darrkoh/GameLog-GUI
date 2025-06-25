@@ -1,4 +1,4 @@
-use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Color32, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
 
@@ -64,17 +64,12 @@ impl GameLog {
 impl App for GameLog {
 
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        TopBottomPanel::top("top_panel").exact_height(70.0).show(ctx, |ui| {
-            // Variables for hiding ui elements depending on window size
-            let available_width = ui.available_size().x;
-            let min_width_for_search = 800.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
-
+        TopBottomPanel::top("top_panel").exact_height(40.0).show(ctx, |ui| {
             // Set the correct image depending on whether the appearance is currently light mode or dark mode
             let appearance_texture = if self.dark_mode {&self.assets[1]} else {&self.assets[0]};
 
             // Content Sizes
-            let appearance_size = egui::Vec2::new(40.0, 40.0);
-            let search_size = egui::Vec2::new(300.0, 30.0);
+            let appearance_size = egui::Vec2::new(20.0, 20.0); // Image Size
 
             // Image Sizeing so they're not taking up the whole goddamn screen
             let sized_appearance_texture = egui::Image::new(appearance_texture).max_size(appearance_size);
@@ -88,7 +83,34 @@ impl App for GameLog {
 
             // TOP BAR CONTENT
             ui.horizontal_centered(|ui|{
+                // Nav Buttons
+                ui.add_sized(appearance_size, egui::Button::new("Add"));
+                ui.add_sized(appearance_size, egui::Button::new("Remove"));
 
+                // Dark/Light mode toggle
+                ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui|{
+                    if ui.add_sized(appearance_size, egui::ImageButton::new(sized_appearance_texture))
+                    .clicked() {
+                        self.dark_mode = !self.dark_mode;
+                    }
+                });     
+            });
+        });
+
+        // Actual Contents of the window
+        CentralPanel::default().show(ctx, |ui| {
+
+            // Variables for hiding ui elements depending on window size
+            let available_width = ui.available_size().x;
+            let min_width_for_search = 800.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
+            let search_size = egui::Vec2::new(300.0, 30.0);
+
+            ui.vertical_centered(|ui| {
+                ui.add_space(30.0);
+                ui.label(RichText::new("WELCOME TO YOUR GAME LOG!").font(FontId::proportional(60.0)).underline());
+                ui.add_space(20.0);
+        
+        
                 // Searching for a Game
                 ui.vertical_centered(|ui|{
                     ui.label("Search:"); // Affordance, telling users what the search bar is for
@@ -99,6 +121,7 @@ impl App for GameLog {
                         .frame(true) // Frame appears upon cursor hover
                         .horizontal_align(egui::Align::Center)
                         .vertical_align(egui::Align::Center)
+                        .
                     ); 
 
                     // Hide feedback message if user starts making the window smaller and theres a long search message
@@ -123,23 +146,8 @@ impl App for GameLog {
                     }
                 });
 
-                // Dark/Light Mode toggle (End of the Top Bar)
-                ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui|{
-                    if ui.add_sized(appearance_size, egui::ImageButton::new(sized_appearance_texture))
-                    .clicked() {
-                        self.dark_mode = !self.dark_mode;
-                    }
-                });    
-            });
-        });
+                ui.add_space(10.0);
 
-        // Actual Contents of the window
-        CentralPanel::default().show(ctx, |ui| {
-            ui.vertical_centered(|ui| {
-                ui.add_space(30.0);
-                ui.label(RichText::new("WELCOME TO YOUR GAME LOG!").font(FontId::proportional(60.0)).underline());
-                ui.add_space(50.0);
-        
                 egui::Frame::default()
                     .fill(egui::Color32::DARK_GRAY)
                     .corner_radius(egui::CornerRadius::same(10))
