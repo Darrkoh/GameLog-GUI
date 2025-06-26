@@ -1,5 +1,9 @@
+use std::fmt::format;
+
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
+
+use crate::json_file_operations::reading_json;
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -102,8 +106,13 @@ impl App for GameLog {
 
             // Variables for hiding ui elements depending on window size
             let available_width = ui.available_size().x;
-            let min_width_for_search = 800.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
+            let min_width_for_search = 600.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
             let search_size = egui::Vec2::new(300.0, 30.0);
+            let frame_size = egui::Vec2::new(600.0, 800.0);
+
+            // Game Log Display Variables
+            let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
+            let mut game_log_display = format!("The Game Log is empty :/"); // Message for when the game log is empty
 
             ui.vertical_centered(|ui| {
                 ui.add_space(30.0);
@@ -124,7 +133,7 @@ impl App for GameLog {
                     ); 
 
                     // Hide feedback message if user starts making the window smaller and theres a long search message
-                    if (available_width >= min_width_for_search) || (self.search_game.len() <= 23)
+                    if (available_width >= min_width_for_search) || (self.search_game.len() <= 30)
                     {
                         // Tell users their input has been detected (Feedback)
                         let feedback_message = egui::Label::new(
@@ -151,17 +160,36 @@ impl App for GameLog {
                     .corner_radius(egui::CornerRadius::same(10))
                     .stroke(egui::Stroke::new(1.0, egui::Color32::BLACK))
                     .show(ui, |ui| {
-                        let frame_size = egui::Vec2::new(600.0, 800.0);
-                    
+
                         // Content of frame. Will contain Game Log Info
                         ui.set_min_size(frame_size); // Set Size of frame (Overritdes ui.vertical_centered in terms of taking up available space)
                         ui.set_max_size(frame_size); // Need to set both of these so frame will always be the same size no matter the content
                         
-                        ui.label(RichText::new("PLACEHOLDER")
-                            .size(20.0)
-                            .strong()
-                            .color(ui.visuals().text_color())
-                        )
+                        if !game_file_contents.is_empty() {
+                            // Create and display a label for every game in the game log in a structured and consistent manner
+                            for (i, game) in game_file_contents.iter().enumerate() {
+                                game_log_display = format!("Index: {} \nName: {} \nRating: {} \nTimes Played: {} \n Last Playthrough: {} \nNotes: {}\n\n",
+                                    i,
+                                    game.name,
+                                    game.rating,
+                                    game.times_played,
+                                    game.last_playthrough,
+                                    game.notes
+                                );
+
+                                ui.label(RichText::new(&game_log_display)
+                                    .size(20.0)
+                                    .strong()
+                                    .color(ui.visuals().text_color())
+                                );
+                            }
+                        } else { 
+                            ui.label(RichText::new(&game_log_display)
+                                .size(20.0)
+                                .strong()
+                                .color(ui.visuals().text_color())
+                            );
+                        }
                     });
             });
         });

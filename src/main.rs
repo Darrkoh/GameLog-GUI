@@ -1,4 +1,6 @@
 pub mod app_setup;
+pub mod json_file_operations;
+pub mod enums;
 use eframe::{egui::{self, ViewportBuilder}, run_native, App, NativeOptions};
 use crate::app_setup::GameLog;
 
