@@ -3,8 +3,9 @@ use std::fs::OpenOptions;
 use std::io::{BufReader, Write};
 use std::fs::File;
 use serde::{Deserialize, Serialize};
-use anyhow::Result; // So i can have easy error handling with anyhow
+use anyhow::anyhow; // So i can have easy error handling with anyhow
 use crate::enums::Rating;
+use std::result::Result;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Game {
@@ -36,7 +37,7 @@ pub fn reading_json() -> Vec<Game> // Result is wrapped around incase there is a
 }
 
 // Create a Game and add it's Json data to the text file
-pub fn save_to_file(game_log: &Vec<Game>) -> Result<()>
+pub fn save_to_file(game_log: &Vec<Game>) -> Result<(), Box<dyn std::error::Error>>
 {
 
     // Serialising a the game_log into JSON and overwriting the previous file with this new data. It's literally the same with the new data added
@@ -51,4 +52,15 @@ pub fn save_to_file(game_log: &Vec<Game>) -> Result<()>
     file.write_all(new_json.as_bytes())?;
 
     Ok(())
+}
+
+pub fn search_for_game(game_log: &Vec<Game>, query: &str) -> Result<usize, anyhow::Error>
+{
+    let query_lower = query.to_lowercase(); // lowercase so it wont be case sensitive to users
+    for (i, game) in game_log.iter().enumerate() {
+        if game.name.to_lowercase() == query_lower{
+            return Ok(i); // Game found
+        }
+    }
+    Err(anyhow!("No Game")) // If no game name is found, return error
 }

@@ -1,9 +1,7 @@
-use std::fmt::format;
-
-use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel, Ui}, App, Frame};
+use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
-use crate::json_file_operations::reading_json;
+use crate::json_file_operations::{reading_json, search_for_game};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -12,7 +10,9 @@ use crate::json_file_operations::reading_json;
 pub struct GameLog { 
     pub dark_mode: bool, 
     pub assets: Vec<egui::TextureHandle>,
-    pub search_game: String
+    pub search_game: String,
+    pub last_searched_term: String, // Stores last input of "search_game" so input feedback messages can linger after search_game is cleared
+    pub invalid_search_message: String // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
 }
 
 /// App settings on startup
@@ -25,10 +25,13 @@ impl GameLog {
     pub fn startup(ctx: &egui::Context)  -> Self {
         let assets = Self::load_assets_from_bytes(ctx);
         let search_game: String = String::new(); 
-
+        let last_searched_term: String = String::new(); 
+        let mut invalid_search_message = String::new(); 
         Self { dark_mode: true, 
                 assets,
-                search_game
+                search_game,
+                last_searched_term,
+                invalid_search_message
             }
     }
 
@@ -109,6 +112,8 @@ impl App for GameLog {
             let min_width_for_search = 600.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
             let search_size = egui::Vec2::new(300.0, 30.0);
 
+            
+
             // Game Log Display Variables
             let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
             let mut game_log_display = format!("The Game Log is empty :/"); // Message for when the game log is empty
@@ -131,6 +136,22 @@ impl App for GameLog {
                         .vertical_align(egui::Align::Center)
                     ); 
 
+                    // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
+                    // Right now i dont have this method so nothing really happens lol
+                    if response.lost_focus() && ui.input(|input| input.key_pressed(egui::Key::Enter ))
+                    { 
+
+                        self.last_searched_term = self.search_game.clone(); // Save the users input for message displaying 
+
+                        let i = match search_for_game(&game_file_contents, &self.last_searched_term)
+                        {
+                            Ok(_) => self.invalid_search_message.clear(),
+                            Err(_) => self.invalid_search_message = format!("Invalid Game") // Display this message to tell users the game doesn't exist in the game log
+                        };
+                        
+                        self.search_game.clear(); // Clear input, ready for next input
+                    }
+
                     // Hide feedback message if user starts making the window smaller and theres a long search message
                     if (available_width >= min_width_for_search) || (self.search_game.len() <= 30)
                     {
@@ -142,13 +163,10 @@ impl App for GameLog {
                         if !self.search_game.is_empty() {
                             ui.add(feedback_message);
                         }
-                    }
 
-                    // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
-                    // Right now i dont have this method so nothing really happens lol
-                    if response.lost_focus() && ui.input(|input| input.key_pressed(egui::Key::Enter ))
-                    {
-                        self.search_game = String::new(); // Clear input, ready for next input
+                        if !self.invalid_search_message.is_empty() {
+                            ui.label(RichText::new(&self.invalid_search_message));
+                        }
                     }
                 });
 
@@ -190,7 +208,7 @@ impl App for GameLog {
                                     .color(ui.visuals().text_color())
                                 );
                             }
-                    });
+                        });
                 });
             });
         });
