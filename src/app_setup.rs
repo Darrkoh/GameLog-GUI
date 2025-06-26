@@ -1,7 +1,7 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
-use crate::json_file_operations::{reading_json, search_for_game};
+use crate::json_file_operations::{reading_json, search_for_game, Game};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -12,7 +12,9 @@ pub struct GameLog {
     pub assets: Vec<egui::TextureHandle>,
     pub search_game: String,
     pub last_searched_term: String, // Stores last input of "search_game" so input feedback messages can linger after search_game is cleared
-    pub invalid_search_message: String // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
+    pub invalid_search_message: String, // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
+    search_result: Option<Vec<Game>>, // Store search results for games
+    pub game_file_contents: Vec<Game> // Grabbing Gamelog details from the JSON file
 }
 
 /// App settings on startup
@@ -26,12 +28,17 @@ impl GameLog {
         let assets = Self::load_assets_from_bytes(ctx);
         let search_game: String = String::new(); 
         let last_searched_term: String = String::new(); 
-        let mut invalid_search_message = String::new(); 
+        let invalid_search_message = String::new(); 
+        let search_result: Option<Vec<Game>>;
+        let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
+
         Self { dark_mode: true, 
                 assets,
                 search_game,
                 last_searched_term,
-                invalid_search_message
+                invalid_search_message,
+                search_result: None,
+                game_file_contents
             }
     }
 
@@ -115,7 +122,6 @@ impl App for GameLog {
             
 
             // Game Log Display Variables
-            let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
             let mut game_log_display = format!("The Game Log is empty :/"); // Message for when the game log is empty
 
             ui.vertical_centered(|ui| {
@@ -128,7 +134,7 @@ impl App for GameLog {
                 ui.vertical_centered(|ui|{
                     ui.label("Search:"); // Affordance, telling users what the search bar is for
                     
-                    let response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)// Save user's search input
+                    let search_response = ui.add_sized(search_size, TextEdit::singleline(&mut self.search_game)// Save user's search input
                         .hint_text("Enter the Game's Name")
                         .char_limit(50) // Enforce a 50 character search limit so users can't break the layout :D 
                         .frame(true) // Frame appears upon cursor hover
@@ -138,15 +144,21 @@ impl App for GameLog {
 
                     // If Enter Key is pressed, execute a "Search File" function which will search the game log for the game name inputted.
                     // Right now i dont have this method so nothing really happens lol
-                    if response.lost_focus() && ui.input(|input| input.key_pressed(egui::Key::Enter ))
+                    if search_response.lost_focus() && ui.input(|input| input.key_pressed(egui::Key::Enter ))
                     { 
 
                         self.last_searched_term = self.search_game.clone(); // Save the users input for message displaying 
 
-                        let i = match search_for_game(&game_file_contents, &self.last_searched_term)
+                        self.search_result = match search_for_game(&self.game_file_contents, &self.last_searched_term)
                         {
-                            Ok(_) => self.invalid_search_message.clear(),
-                            Err(_) => self.invalid_search_message = format!("Invalid Game") // Display this message to tell users the game doesn't exist in the game log
+                            Ok(game_index) => {
+                                self.invalid_search_message.clear();
+                                Some(vec![self.game_file_contents[game_index].clone()]) // Save the game found to a field
+                            }
+                            Err(_) =>  {
+                                self.invalid_search_message = format!("Invalid Game"); // Display this message to tell users the game doesn't exist in the game log
+                                None // Contents of search_result is reset, displaying the whole list again
+                            }
                         };
                         
                         self.search_game.clear(); // Clear input, ready for next input
@@ -169,6 +181,7 @@ impl App for GameLog {
                         }
                     }
                 });
+                
 
                 ui.add_space(10.0);
 
@@ -182,31 +195,57 @@ impl App for GameLog {
                             // Content of frame. Will contain Game Log Info
                             ui.set_width(600.0); // Set width so the frame doesnt take up the whole panel lol
                             
-                            if !game_file_contents.is_empty() {
-                                // Create and display a label for every game in the game log in a structured and consistent manner
-                                for (i, game) in game_file_contents.iter().enumerate() {
-                                    game_log_display = format!("Index: {} \nName: {} \nRating: {} \nTimes Played: {} \n Last Playthrough: {} \nNotes: {}\n\n",
-                                        i,
+                            if !self.game_file_contents.is_empty() {
+
+                                // If there is a valid search result
+                                if !self.search_result.is_none() {
+
+                                    let game_found = self.search_result.as_ref().unwrap();
+                                    let game = &game_found[0];
+                                    game_log_display = format!(
+                                        "Name: {}\nRating: {}\nTimes Played: {}\nLast Playthrough: {}\nNotes: {}\n\n",
                                         game.name,
                                         game.rating,
                                         game.times_played,
                                         game.last_playthrough,
                                         game.notes
                                     );
-
+                                    // Display Search Results
                                     ui.label(RichText::new(&game_log_display)
-                                        .size(20.0)
-                                        .strong()
-                                        .color(ui.visuals().text_color())
-                                    );
+                                            .size(20.0)
+                                            .strong()
+                                            .color(ui.visuals().text_color())
+                                        );
                                 }
-                            } 
-                            else { 
-                                ui.label(RichText::new(&game_log_display) // No games found
-                                    .size(20.0)
-                                    .strong()
-                                    .color(ui.visuals().text_color())
-                                );
+
+                                // Display whole list if no search result, and data is in JSON file
+                                else {
+                                    // Create and display a label for every game in the game log in a structured and consistent manner
+                                    for (i, game) in self.game_file_contents.iter().enumerate() {
+                                        game_log_display = format!("Index: {} \nName: {} \nRating: {} \nTimes Played: {} \n Last Playthrough: {} \nNotes: {}\n\n",
+                                            i,
+                                            game.name,
+                                            game.rating,
+                                            game.times_played,
+                                            game.last_playthrough,
+                                            game.notes
+                                        );
+                                        // This is needed to print out every game in the list, as just using one outside the loop results in variable overwriting, so the label wont display every game
+                                        ui.label(RichText::new(&game_log_display)
+                                            .size(20.0)
+                                            .strong()
+                                            .color(ui.visuals().text_color())
+                                    );
+                                    }   
+                                }
+                            }
+                            else {
+                                // Will Automatically print a "No Games Found Message" if no games are found
+                                ui.label(RichText::new(&game_log_display)
+                                            .size(20.0)
+                                            .strong()
+                                            .color(ui.visuals().text_color())
+                                        );
                             }
                         });
                 });
