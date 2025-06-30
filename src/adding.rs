@@ -1,4 +1,4 @@
-use eframe::egui::{Checkbox, Label, RichText, Spacing, TextEdit, Vec2};
+use eframe::egui::{Button, Checkbox, Label, RadioButton, RichText, Spacing, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, egui::Ui};
 
@@ -44,6 +44,10 @@ impl GameLog{
                 ui.add_sized(label_size,
                     Checkbox::new(&mut self.checked, "Are you sure you wish to add this game?")
                 );
+
+                ui.add_space(5.0);  
+
+                ui.add_sized(Vec2::new(40.0, 20.0), Button::new("Go"))
             });
         });
     }

@@ -1,3 +1,5 @@
+use std::borrow::{Borrow, BorrowMut};
+
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 use crate::{editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
@@ -301,23 +303,23 @@ impl App for GameLog {
             // Opening another window when a button is pressed
             if self.open_window {
 
-                let mut open_window = self.open_window; // Extract the self variable into a seperate variable so we can reference self.open window twice when opening the operation windows
+                let mut open_window = self.open_window; // Pass the self variable by val as we cannot borrow a mutable and immutable referencer of a self variable at the same time
 
                 match self.current_window_opened // Each match statement will execute GUI code in the respective file for each window's display
                 {
                     WindowOpened::Adding => { 
-
                             egui::Window::new("Adding Games")
                             .open(&mut open_window)
                             .show(ctx, |ui| {
                                 self.adding_gui(ui)
                             });
+                            self.open_window = open_window; // Copy contents entered in the adding window to the self variable for consistency
                     },
                     WindowOpened::Editing => {
 
 
                             egui::Window::new("Editing Game Information")
-                                .open(&mut open_window)
+                                .open(&mut self.open_window)
                                 .show(ctx, |ui| {
                                         editing_gui(ui)
                                 });
@@ -327,7 +329,7 @@ impl App for GameLog {
                             
 
                             egui::Window::new("Removing Games")
-                                .open(&mut open_window)
+                                .open(&mut self.open_window)
                                 .show(ctx, |ui| {
                                         removing_gui(ui)
                                 });
@@ -338,10 +340,11 @@ impl App for GameLog {
                 };
             }
 
-            // Keep current_window_opened value in sync with the open_window value
+            // Keep variables that may be out of sync due to opening another page synced
             if !self.open_window
             {
                 self.current_window_opened = WindowOpened::Default;
+                self.checked = false;
             }
         });
     }
