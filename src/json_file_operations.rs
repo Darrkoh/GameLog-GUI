@@ -40,7 +40,6 @@ pub fn reading_json() -> Vec<Game> // Result is wrapped around incase there is a
 // Create a Game and add it's Json data to the text file
 pub fn save_to_file(game_log: &Vec<Game>) -> Result<(), Box<dyn std::error::Error>>
 {
-
     // Serialising a the game_log into JSON and overwriting the previous file with this new data. It's literally the same with the new data added
 
      let new_json = serde_json::to_string_pretty(&game_log)?;

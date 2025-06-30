@@ -4,6 +4,7 @@ pub mod enums;
 pub mod adding;
 pub mod editing;
 pub mod removing;
+pub mod clock;
 use eframe::{egui::{self, ViewportBuilder}, run_native, App, NativeOptions};
 use crate::app_setup::GameLog;
 

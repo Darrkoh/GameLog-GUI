@@ -1,6 +1,6 @@
-use eframe::egui::{Button, Checkbox, Label, RadioButton, RichText, Spacing, TextEdit, Vec2};
+use eframe::egui::{self, Button, Checkbox, Label, RichText, TextEdit, Vec2};
 
-use crate::{app_setup::GameLog, egui::Ui};
+use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_file_operations::{save_to_file, Game}};
 
 // "Adding" Window GUI Coded        
 
@@ -8,6 +8,7 @@ impl GameLog{
     pub fn adding_gui (&mut self, ui: &mut Ui) 
     {
         let label_size= Vec2::new(100.0, 20.0);
+
         ui.vertical(|ui| {
 
             ui.horizontal(|ui| {
@@ -15,7 +16,9 @@ impl GameLog{
                     Label::new(RichText::new("Game Name").strong())
                 );
 
-                let game_name_response = ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_name));
+                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_name)
+                    .hint_text("Game Name (< 50 Char)")
+                    .char_limit(50));
             });
 
             ui.add_space(2.0);
@@ -25,7 +28,10 @@ impl GameLog{
                     Label::new(RichText::new("Game Rating").strong())
                 );
 
-                let game_rating_response = ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_rating));
+                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_rating)
+                    .hint_text("Number between 1-5")
+                    .char_limit(1)
+                );
             });
 
             ui.add_space(2.0);
@@ -35,10 +41,16 @@ impl GameLog{
                     Label::new(RichText::new("Game Notes").strong())
                 );
 
-                let game_notes_response = ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_notes));
+                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_notes)
+                    .hint_text("This is optional")
+                );
             });
 
             ui.add_space(2.0);  
+
+            ui.add_sized(label_size,
+                    Label::new(RichText::new(&self.add_error_message).color(egui::Color32::RED))
+                );
 
             ui.horizontal(|ui| {
                 ui.add_sized(label_size,
@@ -47,7 +59,53 @@ impl GameLog{
 
                 ui.add_space(5.0);  
 
-                ui.add_sized(Vec2::new(40.0, 20.0), Button::new("Go"))
+                ui.add_enabled_ui(self.enabled, |ui| {
+                    if ui.add_sized(Vec2::new(150.0, 20.0), Button::new("Go"))
+                        .clicked() {
+                            if (!self.add_game_name.is_empty() && !self.add_game_rating.is_empty()) // Making sure the user has inputted into the game name and ratings box (Notes is optional)
+                            {
+                                match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
+                                {
+                                    Ok(parsed) => {
+                                        if let Some(parsed_rating) = Rating::from_u8(parsed){ //Parsing into an enum
+                                            let date = get_date();
+
+                                            let game = Game {
+                                                name: self.add_game_name.clone(),
+                                                rating: parsed_rating,
+                                                times_played: 1,
+                                                last_playthrough: date.to_string(),
+                                                notes: self.add_game_notes.clone(),
+                                            };
+
+                                            self.game_file_contents.push(game); // Add it to the vector so we can easily save it to the JSON file
+
+                                            match save_to_file(&self.game_file_contents)
+                                            {
+                                                Ok(_) => {
+                                                    println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
+                                                    self.add_error_message.clear(); // Remove any error messages previously acquired
+                                                },
+                                                Err(_) => self.add_error_message = format!("There was an error when adding the game to the file"),
+                                            };
+                                        }
+                                        else {
+                                            self.add_error_message = format!("Invalid number entered!\nTry again buddy");
+                                        }
+                                    },
+                                    _ => self.add_error_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
+                                }
+                            } else {
+                                self.add_error_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
+                            }
+
+                            // Clear all inout boxes once the button is clicked and operations have been executed
+                            self.add_game_name.clear();
+                            self.add_game_rating.clear();
+                            self.add_game_notes.clear();
+                        };
+                });
+                self.enabled = self.checked;
             });
         });
     }

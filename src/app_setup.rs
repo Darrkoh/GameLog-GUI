@@ -24,13 +24,15 @@ pub struct GameLog {
     open_window: bool, // When this is true, code will execute to open a new window in the app
     current_window_opened: WindowOpened,
 
-    // Global Check Box Variable (Wont be used for more than one page at a time)
+    // Global Check Box Variable and Enable Button Variable (Wont be used for more than one page at a time)
     pub checked: bool,
+    pub enabled: bool, // This isnt needed as i could replace it with checked, however i'm using it as an explain variable so the codes easier to read
 
     // Adding
     pub add_game_name: String,
     pub add_game_rating: String,
-    pub add_game_notes: String
+    pub add_game_notes: String,
+    pub add_error_message: String
 
 
     // Removing
@@ -54,10 +56,12 @@ impl GameLog {
         let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
         let open_window = false;
         let current_window_opened = WindowOpened::Default; // Tracks current window so the program knows what window to open
-        let checked = false;;
+        let checked = false;
+        let enabled = checked;
         let add_game_name = String::new();
         let add_game_rating = String::new();
         let add_game_notes = String::new();
+        let add_error_message = String::new();
         Self { dark_mode: true, 
                 assets,
                 search_game,
@@ -68,9 +72,11 @@ impl GameLog {
                 open_window,
                 current_window_opened,
                 checked,
+                enabled,
                 add_game_name,
                 add_game_rating,
-                add_game_notes
+                add_game_notes,
+                add_error_message
             }
     }
 
@@ -226,7 +232,7 @@ impl App for GameLog {
                         }
 
                         if !self.invalid_search_message.is_empty() {
-                            ui.label(RichText::new(&self.invalid_search_message));
+                            ui.label(RichText::new(&self.invalid_search_message).color(egui::Color32::RED));
                         }
                     }
                 });
@@ -344,7 +350,7 @@ impl App for GameLog {
             if !self.open_window
             {
                 self.current_window_opened = WindowOpened::Default;
-                self.checked = false;
+                self.checked = false; // This also changes the enabled variable
             }
         });
     }
