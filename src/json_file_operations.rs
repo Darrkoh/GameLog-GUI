@@ -1,4 +1,4 @@
-pub mod adding;
+// pub mod adding;
 // Crates //
 use std::fs::OpenOptions;
 use std::io::{BufReader, Write};

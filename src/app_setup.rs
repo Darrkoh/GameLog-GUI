@@ -1,7 +1,7 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
-use crate::json_file_operations::{reading_json, search_for_game, Game};
+use crate::{enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -14,7 +14,10 @@ pub struct GameLog {
     pub last_searched_term: String, // Stores last input of "search_game" so input feedback messages can linger after search_game is cleared
     pub invalid_search_message: String, // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
     search_result: Option<Vec<Game>>, // Store search results for games
-    pub game_file_contents: Vec<Game> // Grabbing Gamelog details from the JSON file
+    pub game_file_contents: Vec<Game>, // Grabbing Gamelog details from the JSON file
+
+    open_window: bool, // When this is true, code will execute to open a new window in the app
+    current_window_opened: WindowOpened
 }
 
 /// App settings on startup
@@ -29,8 +32,9 @@ impl GameLog {
         let search_game: String = String::new(); 
         let last_searched_term: String = String::new(); 
         let invalid_search_message = String::new(); 
-        let search_result: Option<Vec<Game>>;
         let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
+        let open_window = false;
+        let current_window_opened = WindowOpened::Default; // Tracks current window so the program knows what window to open
 
         Self { dark_mode: true, 
                 assets,
@@ -38,7 +42,9 @@ impl GameLog {
                 last_searched_term,
                 invalid_search_message,
                 search_result: None,
-                game_file_contents
+                game_file_contents,
+                open_window,
+                current_window_opened
             }
     }
 
@@ -98,8 +104,25 @@ impl App for GameLog {
             // TOP BAR CONTENT
             ui.horizontal_centered(|ui|{
                 // Nav Buttons
-                ui.add_sized(appearance_size, egui::Button::new("Add"));
-                ui.add_sized(appearance_size, egui::Button::new("Remove"));
+                if ui.add_sized(appearance_size, egui::Button::new("Add"))
+                .clicked() {
+                    self.open_window = true;
+                    self.current_window_opened = WindowOpened::Adding;
+                };
+
+                if ui.add_sized(appearance_size, egui::Button::new("Edit"))
+                .clicked() {
+                    self.open_window = true;
+                    self.current_window_opened = WindowOpened::Editing;
+                };
+
+
+                if ui.add_sized(appearance_size, egui::Button::new("Remove"))
+                .clicked() {
+                    self.open_window = true;
+                    self.current_window_opened = WindowOpened::Removing;
+                };
+
 
                 // Dark/Light mode toggle
                 ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui|{
@@ -250,6 +273,47 @@ impl App for GameLog {
                         });
                 });
             });
+
+            // Opening another window when a button is pressed
+            if self.open_window {
+                match self.current_window_opened 
+                {
+                    WindowOpened::Adding => { 
+                        
+                            egui::Window::new("Adding Games")
+                            .open(&mut self.open_window)
+                                .show(ctx, |ui| {
+                                    ui.label("Adding");
+                                });
+                        
+                    },
+                    WindowOpened::Editing => {
+                        
+                            egui::Window::new("Editing Game Information")
+                                .open(&mut self.open_window)
+                                .show(ctx, |ui| {
+                                        ui.label("Editing");
+                                });
+                        
+                    },
+                    WindowOpened::Removing => {
+                            egui::Window::new("Removing Games")
+                                .open(&mut self.open_window)
+                                .show(ctx, |ui| {
+                                        ui.label("Removing");
+                                });
+                    },
+                    WindowOpened::Default => { // This Will never be reached as it just exists as a default value
+                            println!("All External Windows Closed")
+                    },
+                };
+            }
+
+            // Keep current_window_opened value in sync with the open_window value
+            if !self.open_window
+            {
+                self.current_window_opened = WindowOpened::Default;
+            }
         });
     }
 }

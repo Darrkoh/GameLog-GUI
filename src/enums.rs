@@ -45,3 +45,11 @@ impl fmt::Display for Rating {
         write!(f, "{}", s)
     }
 }
+
+// For Opening a window
+pub enum WindowOpened {
+    Adding,
+    Removing,
+    Editing,
+    Default
+}
