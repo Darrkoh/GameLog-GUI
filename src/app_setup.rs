@@ -1,23 +1,40 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
-
-use crate::{adding::adding_gui, editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
+use crate::{editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
 
 
 /// Stores the application's state, including UI settings and user input.
 /// 
 /// This struct holds texture assets, toggles for dark mode, and the current game search query.
 pub struct GameLog { 
+    // General Settings/File Importing
     pub dark_mode: bool, 
     pub assets: Vec<egui::TextureHandle>,
+    pub game_file_contents: Vec<Game>, // Grabbing Gamelog details from the JSON file
+
+    // Search Gamed
     pub search_game: String,
     pub last_searched_term: String, // Stores last input of "search_game" so input feedback messages can linger after search_game is cleared
     pub invalid_search_message: String, // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
     search_result: Option<Vec<Game>>, // Store search results for games
-    pub game_file_contents: Vec<Game>, // Grabbing Gamelog details from the JSON file
 
+    // Opening External Windows
     open_window: bool, // When this is true, code will execute to open a new window in the app
-    current_window_opened: WindowOpened
+    current_window_opened: WindowOpened,
+
+    // Global Check Box Variable (Wont be used for more than one page at a time)
+    pub checked: bool,
+
+    // Adding
+    pub add_game_name: String,
+    pub add_game_rating: String,
+    pub add_game_notes: String
+
+
+    // Removing
+
+
+    // Editing
 }
 
 /// App settings on startup
@@ -35,7 +52,10 @@ impl GameLog {
         let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
         let open_window = false;
         let current_window_opened = WindowOpened::Default; // Tracks current window so the program knows what window to open
-
+        let checked = false;;
+        let add_game_name = String::new();
+        let add_game_rating = String::new();
+        let add_game_notes = String::new();
         Self { dark_mode: true, 
                 assets,
                 search_game,
@@ -44,7 +64,11 @@ impl GameLog {
                 search_result: None,
                 game_file_contents,
                 open_window,
-                current_window_opened
+                current_window_opened,
+                checked,
+                add_game_name,
+                add_game_rating,
+                add_game_notes
             }
     }
 
@@ -276,27 +300,34 @@ impl App for GameLog {
 
             // Opening another window when a button is pressed
             if self.open_window {
+
+                let mut open_window = self.open_window; // Extract the self variable into a seperate variable so we can reference self.open window twice when opening the operation windows
+
                 match self.current_window_opened // Each match statement will execute GUI code in the respective file for each window's display
                 {
                     WindowOpened::Adding => { 
+
                             egui::Window::new("Adding Games")
-                            .open(&mut self.open_window)
-                                .show(ctx, |ui| {
-                                    adding_gui(ui)
-                                });
-                        
+                            .open(&mut open_window)
+                            .show(ctx, |ui| {
+                                self.adding_gui(ui)
+                            });
                     },
                     WindowOpened::Editing => {
+
+
                             egui::Window::new("Editing Game Information")
-                                .open(&mut self.open_window)
+                                .open(&mut open_window)
                                 .show(ctx, |ui| {
                                         editing_gui(ui)
                                 });
                         
                     },
                     WindowOpened::Removing => {
+                            
+
                             egui::Window::new("Removing Games")
-                                .open(&mut self.open_window)
+                                .open(&mut open_window)
                                 .show(ctx, |ui| {
                                         removing_gui(ui)
                                 });
