@@ -1,7 +1,7 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 
-use crate::{enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}};
+use crate::{adding::adding_gui, editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -279,20 +279,18 @@ impl App for GameLog {
                 match self.current_window_opened 
                 {
                     WindowOpened::Adding => { 
-                        
                             egui::Window::new("Adding Games")
                             .open(&mut self.open_window)
                                 .show(ctx, |ui| {
-                                    ui.label("Adding");
+                                    adding_gui(ui)
                                 });
                         
                     },
                     WindowOpened::Editing => {
-                        
                             egui::Window::new("Editing Game Information")
                                 .open(&mut self.open_window)
                                 .show(ctx, |ui| {
-                                        ui.label("Editing");
+                                        editing_gui(ui)
                                 });
                         
                     },
@@ -300,7 +298,7 @@ impl App for GameLog {
                             egui::Window::new("Removing Games")
                                 .open(&mut self.open_window)
                                 .show(ctx, |ui| {
-                                        ui.label("Removing");
+                                        removing_gui(ui)
                                 });
                     },
                     WindowOpened::Default => { // This Will never be reached as it just exists as a default value
