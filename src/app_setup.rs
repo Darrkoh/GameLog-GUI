@@ -276,7 +276,7 @@ impl App for GameLog {
 
             // Opening another window when a button is pressed
             if self.open_window {
-                match self.current_window_opened 
+                match self.current_window_opened // Each match statement will execute GUI code in the respective file for each window's display
                 {
                     WindowOpened::Adding => { 
                             egui::Window::new("Adding Games")

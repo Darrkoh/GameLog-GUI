@@ -7,17 +7,458 @@
     "notes": "GREAT GAME...Need to play Genocide"
   },
   {
-    "name": "Deltarune",
-    "rating": "five",
-    "times_played": 1,
-    "last_playthrough": "2025-06-17",
-    "notes": "GREAT GAME :p"
+    "name": "Hollow Knight",
+    "rating": "four",
+    "times_played": 3,
+    "last_playthrough": "2025-05-22",
+    "notes": "Beautiful art style and tough bosses"
   },
   {
-    "name": "Elden Ring: Nightreign",
-    "rating": "four",
+    "name": "Celeste",
+    "rating": "five",
+    "times_played": 2,
+    "last_playthrough": "2025-04-10",
+    "notes": "Challenging but rewarding platformer"
+  },
+  {
+    "name": "The Witcher 3",
+    "rating": "five",
     "times_played": 1,
+    "last_playthrough": "2024-12-15",
+    "notes": "Amazing story and open world"
+  },
+  {
+    "name": "Minecraft",
+    "rating": "four",
+    "times_played": 10,
+    "last_playthrough": "2025-06-20",
+    "notes": "Endless creativity, fun with friends"
+  },
+  {
+    "name": "Stardew Valley",
+    "rating": "five",
+    "times_played": 5,
+    "last_playthrough": "2025-06-18",
+    "notes": "Relaxing farming sim with deep mechanics"
+  },
+  {
+    "name": "Dark Souls",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-01-30",
+    "notes": "Intense difficulty and rewarding combat"
+  },
+  {
+    "name": "Portal 2",
+    "rating": "five",
+    "times_played": 2,
+    "last_playthrough": "2025-03-05",
+    "notes": "Brilliant puzzles and humor"
+  },
+  {
+    "name": "Game 9",
+    "rating": "three",
+    "times_played": 1,
+    "last_playthrough": "2025-05-01",
+    "notes": "Average experience"
+  },
+  {
+    "name": "Game 10",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-12-25",
+    "notes": "Not my style"
+  },
+  {
+    "name": "Game 11",
+    "rating": "five",
+    "times_played": 6,
+    "last_playthrough": "2025-06-10",
+    "notes": "Loved every minute"
+  },
+  {
+    "name": "Game 12",
+    "rating": "four",
+    "times_played": 3,
+    "last_playthrough": "2025-05-28",
+    "notes": "Good gameplay mechanics"
+  },
+  {
+    "name": "Game 13",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-20",
+    "notes": "Could be better"
+  },
+  {
+    "name": "Game 14",
+    "rating": "five",
+    "times_played": 7,
+    "last_playthrough": "2025-06-25",
+    "notes": "Fantastic storyline"
+  },
+  {
+    "name": "Game 15",
+    "rating": "one",
+    "times_played": 0,
+    "last_playthrough": "2024-11-15",
+    "notes": "Did not enjoy it"
+  },
+  {
+    "name": "Game 16",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-06-05",
+    "notes": "Pretty solid game"
+  },
+  {
+    "name": "Game 17",
+    "rating": "five",
+    "times_played": 9,
     "last_playthrough": "2025-06-27",
-    "notes": "Not Played"
+    "notes": "One of my favorites"
+  },
+  {
+    "name": "Game 18",
+    "rating": "three",
+    "times_played": 1,
+    "last_playthrough": "2025-03-12",
+    "notes": "Mediocre"
+  },
+  {
+    "name": "Game 19",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-10-30",
+    "notes": "Not recommended"
+  },
+  {
+    "name": "Game 20",
+    "rating": "four",
+    "times_played": 5,
+    "last_playthrough": "2025-06-22",
+    "notes": "Solid gameplay"
+  },
+  {
+    "name": "Game 21",
+    "rating": "five",
+    "times_played": 3,
+    "last_playthrough": "2025-06-15",
+    "notes": "Highly recommend"
+  },
+  {
+    "name": "Game 22",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-05-18",
+    "notes": "Good but not great"
+  },
+  {
+    "name": "Game 23",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-06-12",
+    "notes": "Nice graphics"
+  },
+  {
+    "name": "Game 24",
+    "rating": "five",
+    "times_played": 8,
+    "last_playthrough": "2025-06-26",
+    "notes": "Amazing soundtrack"
+  },
+  {
+    "name": "Game 25",
+    "rating": "two",
+    "times_played": 1,
+    "last_playthrough": "2025-01-01",
+    "notes": "Not my cup of tea"
+  },
+  {
+    "name": "Game 26",
+    "rating": "four",
+    "times_played": 6,
+    "last_playthrough": "2025-06-23",
+    "notes": "Enjoyed the multiplayer"
+  },
+  {
+    "name": "Game 27",
+    "rating": "five",
+    "times_played": 7,
+    "last_playthrough": "2025-06-28",
+    "notes": "One of the best games ever"
+  },
+  {
+    "name": "Game 28",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-15",
+    "notes": "Decent"
+  },
+  {
+    "name": "Game 29",
+    "rating": "four",
+    "times_played": 5,
+    "last_playthrough": "2025-06-19",
+    "notes": "Fun and engaging"
+  },
+  {
+    "name": "Game 30",
+    "rating": "five",
+    "times_played": 9,
+    "last_playthrough": "2025-06-27",
+    "notes": "Loved the characters"
+  },
+  {
+    "name": "Game 31",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-09-10",
+    "notes": "Boring gameplay"
+  },
+  {
+    "name": "Game 32",
+    "rating": "three",
+    "times_played": 3,
+    "last_playthrough": "2025-05-30",
+    "notes": "Not bad"
+  },
+  {
+    "name": "Game 33",
+    "rating": "five",
+    "times_played": 10,
+    "last_playthrough": "2025-06-29",
+    "notes": "Masterpiece"
+  },
+  {
+    "name": "Game 34",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-06-15",
+    "notes": "Very polished"
+  },
+  {
+    "name": "Game 35",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-18",
+    "notes": "Average"
+  },
+  {
+    "name": "Game 36",
+    "rating": "five",
+    "times_played": 8,
+    "last_playthrough": "2025-06-24",
+    "notes": "Exceptional"
+  },
+  {
+    "name": "Game 37",
+    "rating": "two",
+    "times_played": 1,
+    "last_playthrough": "2024-12-05",
+    "notes": "Could be better"
+  },
+  {
+    "name": "Game 38",
+    "rating": "four",
+    "times_played": 5,
+    "last_playthrough": "2025-06-21",
+    "notes": "Enjoyable"
+  },
+  {
+    "name": "Game 39",
+    "rating": "five",
+    "times_played": 7,
+    "last_playthrough": "2025-06-25",
+    "notes": "Highly replayable"
+  },
+  {
+    "name": "Game 40",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-05-10",
+    "notes": "So-so"
+  },
+  {
+    "name": "Game 41",
+    "rating": "four",
+    "times_played": 6,
+    "last_playthrough": "2025-06-20",
+    "notes": "Good storyline"
+  },
+  {
+    "name": "Game 42",
+    "rating": "five",
+    "times_played": 9,
+    "last_playthrough": "2025-06-28",
+    "notes": "Fantastic gameplay"
+  },
+  {
+    "name": "Game 43",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-11-20",
+    "notes": "Not for me"
+  },
+  {
+    "name": "Game 44",
+    "rating": "three",
+    "times_played": 3,
+    "last_playthrough": "2025-05-25",
+    "notes": "Okay game"
+  },
+  {
+    "name": "Game 45",
+    "rating": "five",
+    "times_played": 8,
+    "last_playthrough": "2025-06-26",
+    "notes": "Best game I've played this year"
+  },
+  {
+    "name": "Game 46",
+    "rating": "four",
+    "times_played": 5,
+    "last_playthrough": "2025-06-22",
+    "notes": "Very fun"
+  },
+  {
+    "name": "Game 47",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-15",
+    "notes": "Average at best"
+  },
+  {
+    "name": "Game 48",
+    "rating": "five",
+    "times_played": 7,
+    "last_playthrough": "2025-06-23",
+    "notes": "Amazing experience"
+  },
+  {
+    "name": "Game 49",
+    "rating": "two",
+    "times_played": 1,
+    "last_playthrough": "2024-10-01",
+    "notes": "Didn't enjoy"
+  },
+  {
+    "name": "Game 50",
+    "rating": "four",
+    "times_played": 6,
+    "last_playthrough": "2025-06-21",
+    "notes": "Well made"
+  },
+  {
+    "name": "Game 51",
+    "rating": "five",
+    "times_played": 9,
+    "last_playthrough": "2025-06-28",
+    "notes": "Epic game"
+  },
+  {
+    "name": "Game 52",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-05-10",
+    "notes": "Mediocre"
+  },
+  {
+    "name": "Game 53",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-06-15",
+    "notes": "Enjoyed the art style"
+  },
+  {
+    "name": "Game 54",
+    "rating": "five",
+    "times_played": 8,
+    "last_playthrough": "2025-06-25",
+    "notes": "Amazing soundtrack"
+  },
+  {
+    "name": "Game 55",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-12-10",
+    "notes": "Not enjoyable"
+  },
+  {
+    "name": "Game 56",
+    "rating": "four",
+    "times_played": 5,
+    "last_playthrough": "2025-06-20",
+    "notes": "Good multiplayer"
+  },
+  {
+    "name": "Game 57",
+    "rating": "five",
+    "times_played": 7,
+    "last_playthrough": "2025-06-27",
+    "notes": "Highly addictive"
+  },
+  {
+    "name": "Game 58",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-12",
+    "notes": "Just okay"
+  },
+  {
+    "name": "Game 59",
+    "rating": "four",
+    "times_played": 6,
+    "last_playthrough": "2025-06-23",
+    "notes": "Good mechanics"
+  },
+  {
+    "name": "Game 60",
+    "rating": "five",
+    "times_played": 9,
+    "last_playthrough": "2025-06-28",
+    "notes": "Loved it"
+  },
+  {
+    "name": "Game 61",
+    "rating": "two",
+    "times_played": 0,
+    "last_playthrough": "2024-11-05",
+    "notes": "Boring"
+  },
+  {
+    "name": "Game 62",
+    "rating": "three",
+    "times_played": 3,
+    "last_playthrough": "2025-05-20",
+    "notes": "Not great"
+  },
+  {
+    "name": "Game 63",
+    "rating": "five",
+    "times_played": 10,
+    "last_playthrough": "2025-06-29",
+    "notes": "Masterpiece"
+  },
+  {
+    "name": "Game 64",
+    "rating": "four",
+    "times_played": 4,
+    "last_playthrough": "2025-06-18",
+    "notes": "Well polished"
+  },
+  {
+    "name": "Game 65",
+    "rating": "three",
+    "times_played": 2,
+    "last_playthrough": "2025-04-22",
+    "notes": "Okay game"
+  },
+  {
+    "name": "Game 66",
+    "rating": "five",
+    "times_played": 8,
+    "last_playthrough": "2025-06-26",
+    "notes": "Great experience"
   }
 ]
