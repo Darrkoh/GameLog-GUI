@@ -4,11 +4,12 @@ use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_f
 
 // "Adding" Window GUI Coded        
 
+// Still implementing the GameLog
 impl GameLog{
     pub fn adding_gui (&mut self, ui: &mut Ui) 
     {
         let label_size= Vec2::new(100.0, 20.0);
-
+        
         ui.vertical(|ui| {
 
             ui.horizontal(|ui| {
@@ -49,7 +50,14 @@ impl GameLog{
             ui.add_space(2.0);  
 
             ui.add_sized(label_size,
-                    Label::new(RichText::new(&self.add_error_message).color(egui::Color32::RED))
+                    Label::new(RichText::new(&self.add_error_message)
+                    .color(
+                        if !self.add_confirmation {
+                            egui::Color32::RED
+                        } else {
+                        egui::Color32::GREEN
+                        }
+                    ))
                 );
 
             ui.horizontal(|ui| {
@@ -62,7 +70,8 @@ impl GameLog{
                 ui.add_enabled_ui(self.enabled, |ui| {
                     if ui.add_sized(Vec2::new(150.0, 20.0), Button::new("Go"))
                         .clicked() {
-                            if (!self.add_game_name.is_empty() && !self.add_game_rating.is_empty()) // Making sure the user has inputted into the game name and ratings box (Notes is optional)
+                            self.add_confirmation = false; // Reset text colour to red, will be changed back to green if the process is successful again 
+                            if !self.add_game_name.is_empty() && !self.add_game_rating.is_empty() // Making sure the user has inputted into the game name and ratings box (Notes is optional)
                             {
                                 match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
                                 {
@@ -84,7 +93,8 @@ impl GameLog{
                                             {
                                                 Ok(_) => {
                                                     println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
-                                                    self.add_error_message.clear(); // Remove any error messages previously acquired
+                                                    self.add_error_message = format!("Game Added!"); // Remove any error messages previously acquired
+                                                    self.add_confirmation = true;
                                                 },
                                                 Err(_) => self.add_error_message = format!("There was an error when adding the game to the file"),
                                             };
