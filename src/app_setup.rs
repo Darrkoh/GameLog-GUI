@@ -1,6 +1,6 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
-use crate::{editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
+use crate::{enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -327,9 +327,9 @@ impl App for GameLog {
 
 
                             egui::Window::new("Editing Game Information")
-                                .open(&mut self.open_window)
+                                .open(&mut open_window)
                                 .show(ctx, |ui| {
-                                        editing_gui(ui)
+                                        self.editing_gui(ui)
                                 });
                         
                     },

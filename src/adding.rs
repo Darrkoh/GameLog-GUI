@@ -10,6 +10,8 @@ impl GameLog{
     {
         let label_size= Vec2::new(100.0, 20.0);
         
+        ui.add_space(5.0);
+
         ui.vertical(|ui| {
 
             ui.horizontal(|ui| {
@@ -102,7 +104,7 @@ impl GameLog{
                                                 match save_to_file(&self.game_file_contents)
                                                 {
                                                     Ok(_) => {
-                                                        println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
+                                                        println!("CREATED"); // Game is added to the game log (Terminal Message)
                                                         self.add_feedback_message = format!("Game Added!"); // Remove any error messages previously acquired
                                                         self.add_confirmation = true;
                                                     },
