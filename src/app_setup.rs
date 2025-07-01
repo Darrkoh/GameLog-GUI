@@ -38,6 +38,10 @@ pub struct GameLog {
 
 
     // Editing
+    pub edit_game_name: String,
+    pub edit_game_rating: String,
+    pub edit_game_notes: String,
+    pub increase_times_played: i32,
     pub editing_search_game_name: String,
     pub editing_search_feedback: String
 }
@@ -78,6 +82,10 @@ impl GameLog {
         // Removing
 
         // Editing
+        let edit_game_name= String::new();
+        let edit_game_rating= String::new();
+        let edit_game_notes= String::new();
+        let increase_times_played = 0;
         let editing_search_game_name = String::new();
         let editing_search_feedback = String::new();
 
@@ -98,6 +106,10 @@ impl GameLog {
                 add_game_notes,
                 add_feedback_message,
                 error_confirmation,
+                edit_game_name,
+                edit_game_rating,
+                edit_game_notes,
+                increase_times_played,
                 editing_search_game_name,
                 editing_search_feedback
             }
@@ -345,6 +357,7 @@ impl App for GameLog {
                     },
                     WindowOpened::Editing => {
                             egui::Window::new("Verify Game")
+                                .min_width(300.0)
                                 .open(&mut open_window)
                                 .show(ctx, |ui| {
                                         self.editing_gui(ui)

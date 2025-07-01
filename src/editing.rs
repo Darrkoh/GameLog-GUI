@@ -1,4 +1,4 @@
-use eframe::egui::{Button, Color32, Context, Direction, Label, Layout, RichText, TextEdit, Vec2, Window};
+use eframe::egui::{Button, Color32, Direction, Label, Layout, RichText, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, egui::Ui, json_file_operations::search_for_game};
 
@@ -68,14 +68,14 @@ impl GameLog {
                 
                 let container_width = 300.0; // width to hold elements being held in a horizontal container
 
+                let game_found = self.search_result.as_ref().unwrap();
+                let game = &game_found[0];
+
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
                     Layout::centered_and_justified(Direction::LeftToRight),
                     |ui| {
-
-                        let game_found = self.search_result.as_ref().unwrap();
-                        let game = &game_found[0];
-
+                        // Game Name
                         ui.horizontal(|ui| {
                             ui.add_sized(Vec2::new(50.0, 20.0),
                                 Label::new(RichText::new("Current Name: "))
@@ -89,15 +89,70 @@ impl GameLog {
                             ui.add_space(10.0);
 
                             ui.add_sized(input_box_size,
-                                TextEdit::singleline(&mut self.add_game_name)
+                                TextEdit::singleline(&mut self.edit_game_name)
                                     .hint_text("New Game Name (< 50 Char)")
                                     .char_limit(50)
                             );
 
                             ui.add_space(10.0);
                         });
-                    },
-                );
+                });
+                
+                ui.add_space(5.0);
+
+                ui.allocate_ui_with_layout(
+                    Vec2::new(container_width, 20.0),
+                    Layout::centered_and_justified(Direction::LeftToRight),
+                    |ui| {    
+                        // Game Rating
+                        ui.horizontal(|ui| {
+                            ui.add_sized(Vec2::new(50.0, 20.0),
+                                Label::new(RichText::new("Current Rating: "))
+                            );
+
+                            ui.add_sized(Vec2::new(50.0, 20.0),
+                                Label::new(RichText::new(&game.rating.to_string())
+                                .strong())
+                            );
+
+                            ui.add_space(10.0);
+
+                            ui.add_sized(input_box_size,
+                                TextEdit::singleline(&mut self.edit_game_rating)
+                                    .hint_text("Number between 1-5")
+                                    .char_limit(1)
+                            );
+                            ui.add_space(10.0);
+                        });
+                });
+
+                ui.add_space(5.0);
+
+                ui.allocate_ui_with_layout(
+                    Vec2::new(container_width, 20.0),
+                    Layout::centered_and_justified(Direction::LeftToRight),
+                    |ui| { 
+                        // Game Notes
+                        ui.horizontal(|ui| {
+                            ui.add_sized(Vec2::new(50.0, 20.0),
+                                Label::new(RichText::new("Current Notes: "))
+                            );
+
+                            ui.add_sized(Vec2::new(50.0, 20.0),
+                                Label::new(RichText::new(&game.notes)
+                                .strong())
+                            );
+
+                            ui.add_space(10.0);
+
+                            ui.add_sized(input_box_size,
+                                TextEdit::singleline(&mut self.edit_game_notes)
+                                    .hint_text("Enter your thoughts")
+                            );
+                            ui.add_space(10.0);
+                        });
+                });
+                // ADD TIMES PLAYED INCREMENTOR (and a button)
             }
         });
     }
