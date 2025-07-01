@@ -22,22 +22,24 @@ pub struct GameLog {
     open_window: bool, // When this is true, code will execute to open a new window in the app
     current_window_opened: WindowOpened,
 
-    // Global Check Box Variable and Enable Button Variable (Wont be used for more than one page at a time)
-    pub checked: bool,
+    // Global Variables to be used all over the program 
+    pub checked: bool, // Checkbox variable
     pub enabled: bool, // This isnt needed as i could replace it with checked, however i'm using it as an explain variable so the codes easier to read
+    pub error_confirmation: bool, // For changing text colours and stuff in error messages. Will be true when no error
 
     // Adding
     pub add_game_name: String,
     pub add_game_rating: String,
     pub add_game_notes: String,
     pub add_feedback_message: String,
-    pub add_confirmation: bool
 
 
     // Removing
 
 
     // Editing
+    pub editing_search_game_name: String,
+    pub editing_search_feedback: String
 }
 
 /// App settings on startup
@@ -48,21 +50,38 @@ impl GameLog {
     ///  - 'assets': Calls a method which loads assets in the 'assets' folder and turns them into textures to be used in the app
     ///  - 'search_game': Used at startup to hold the contents of the app search bar
     pub fn startup(ctx: &egui::Context)  -> Self {
+        // General Settings/File Importing
         let assets = Self::load_assets_from_bytes(ctx);
+        let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
+
+        // Main Menu Searching
         let search_game: String = String::new(); 
         let last_searched_term: String = String::new(); 
         let invalid_search_message = String::new(); 
-        let game_file_contents = reading_json(); // Grabbing Gamelog details from the JSON file
+        
+
+        // Opening External Windows
         let open_window = false;
         let current_window_opened = WindowOpened::Default; // Tracks current window so the program knows what window to open
+
+        // Global Check Box Variable and Enable Button Variable (Wont be used for more than one page at a time)
         let checked = false;
         let enabled = checked;
+
+        // Adding
         let add_game_name = String::new();
         let add_game_rating = String::new();
         let add_game_notes = String::new();
         let add_feedback_message = String::new();
-        let add_confirmation = false; // Will be used for telling the feedback message what colour to be
+        let error_confirmation = false; // Will be used for telling the feedback message what colour to be
 
+        // Removing
+
+        // Editing
+        let editing_search_game_name = String::new();
+        let editing_search_feedback = String::new();
+
+        
         Self { dark_mode: true, 
                 assets,
                 search_game,
@@ -78,7 +97,9 @@ impl GameLog {
                 add_game_rating,
                 add_game_notes,
                 add_feedback_message,
-                add_confirmation 
+                error_confirmation,
+                editing_search_game_name,
+                editing_search_feedback
             }
     }
 
@@ -172,7 +193,7 @@ impl App for GameLog {
         CentralPanel::default().show(ctx, |ui| {
 
             // Variables for hiding ui elements depending on window size
-            let available_width = ui.available_size().x;
+            let available_width = ui.available_size().x; // Used for hiding elements if screen is shrunk to a certain point
             let min_width_for_search = 600.0; // Widest Letters are W and M, this width is in place to hide the Feedback search message before a 50 character message of W/M would be overlapped by the Dark/Light Mode Button
             let search_size = egui::Vec2::new(300.0, 30.0);
 
@@ -321,7 +342,6 @@ impl App for GameLog {
                             .show(ctx, |ui| {
                                 self.adding_gui(ui)
                             });
-                            self.open_window = open_window; // Copy contents entered in the adding window to the self variable for consistency
                     },
                     WindowOpened::Editing => {
 
@@ -346,13 +366,15 @@ impl App for GameLog {
                             println!("All External Windows Closed")
                     },
                 };
+                self.open_window = open_window; // Copy contents entered in the adding window to the self variable for consistency
             }
 
-            // Keep variables that may be out of sync due to opening another page synced
+            // Keep global variables synced when pages are closed
             if !self.open_window
             {
                 self.current_window_opened = WindowOpened::Default;
                 self.checked = false; // This also changes the enabled variable
+                self.error_confirmation = false; // Error Messages will be red again (Default)
             }
         });
     }

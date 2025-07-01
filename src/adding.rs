@@ -9,6 +9,7 @@ impl GameLog{
     pub fn adding_gui (&mut self, ui: &mut Ui) 
     {
         let label_size= Vec2::new(100.0, 20.0);
+        let input_box_size = Vec2::new(150.0, 20.0);
         
         ui.add_space(5.0);
 
@@ -19,7 +20,7 @@ impl GameLog{
                     Label::new(RichText::new("Game Name").strong())
                 );
 
-                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_name)
+                ui.add_sized(input_box_size, TextEdit::singleline(&mut self.add_game_name)
                     .hint_text("Game Name (< 50 Char)")
                     .char_limit(50));
             });
@@ -31,7 +32,7 @@ impl GameLog{
                     Label::new(RichText::new("Game Rating").strong())
                 );
 
-                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_rating)
+                ui.add_sized(input_box_size, TextEdit::singleline(&mut self.add_game_rating)
                     .hint_text("Number between 1-5")
                     .char_limit(1)
                 );
@@ -44,7 +45,7 @@ impl GameLog{
                     Label::new(RichText::new("Game Notes").strong())
                 );
 
-                ui.add_sized(Vec2::new(150.0, 20.0), TextEdit::singleline(&mut self.add_game_notes)
+                ui.add_sized(input_box_size, TextEdit::singleline(&mut self.add_game_notes)
                     .hint_text("This is optional")
                 );
             });
@@ -52,16 +53,18 @@ impl GameLog{
             ui.add_space(2.0);  
 
             // Confirmation/Error Messages are displayed here
-            ui.add_sized(Vec2::new(200.0, 20.0),
-                    Label::new(RichText::new(&self.add_feedback_message)
-                    .color(
-                        if !self.add_confirmation {
-                            egui::Color32::RED
-                        } else {
-                        egui::Color32::GREEN
-                        }
-                    ))
-                );
+            if !self.add_feedback_message.is_empty() {
+                ui.add_sized(Vec2::new(200.0, 20.0),
+                        Label::new(RichText::new(&self.add_feedback_message)
+                        .color(
+                            if !self.error_confirmation {
+                                egui::Color32::RED
+                            } else {
+                            egui::Color32::GREEN
+                            }
+                        ))
+                    );
+            }
 
             ui.horizontal(|ui| {
                 ui.add_sized(label_size,
@@ -76,7 +79,7 @@ impl GameLog{
                     if ui.add_sized(Vec2::new(150.0, 20.0), Button::new("Go"))
                         .clicked() {
 
-                            self.add_confirmation = false; // Reset text colour to red, will be changed back to green if the process is successful again 
+                            self.error_confirmation = false; // Reset text colour to red, will be changed back to green if the process is successful again 
 
                             if !self.add_game_name.is_empty() && !self.add_game_rating.is_empty() // Making sure the user has inputted into the game name and ratings box (Notes is optional)
                             {
@@ -106,7 +109,7 @@ impl GameLog{
                                                     Ok(_) => {
                                                         println!("CREATED"); // Game is added to the game log (Terminal Message)
                                                         self.add_feedback_message = format!("Game Added!"); // Remove any error messages previously acquired
-                                                        self.add_confirmation = true;
+                                                        self.error_confirmation = true;
                                                     },
                                                     Err(_) => self.add_feedback_message = format!("There was an error when adding the game to the file"),
                                                 };
