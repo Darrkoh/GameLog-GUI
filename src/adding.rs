@@ -1,4 +1,4 @@
-use eframe::egui::{self, Button, Checkbox, Label, RichText, TextEdit, Vec2};
+use eframe::egui::{Button, Checkbox, Color32, Label, RichText, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_file_operations::{save_to_file, search_for_game, Game}};
 
@@ -57,10 +57,14 @@ impl GameLog{
                 ui.add_sized(Vec2::new(200.0, 20.0),
                         Label::new(RichText::new(&self.add_feedback_message)
                         .color(
-                            if !self.error_confirmation {
-                                egui::Color32::RED
-                            } else {
-                            egui::Color32::GREEN
+                            if self.error_confirmation == false {
+                                Color32::RED
+                            }
+                            else if self.dark_mode { // Better Color For Dark Mode
+                                Color32::GREEN
+                            }
+                            else { // Better Color For Light Mode
+                                Color32::DARK_GREEN
                             }
                         ))
                     );

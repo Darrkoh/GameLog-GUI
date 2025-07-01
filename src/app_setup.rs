@@ -383,7 +383,7 @@ impl App for GameLog {
                 self.current_window_opened = WindowOpened::Default;
                 self.checked = false; // This also changes the enabled variable
                 self.error_confirmation = false; // Error Messages will be red again (Default)
-                self.add_feedback_message.clear();;
+                self.add_feedback_message.clear();
                 self.editing_search_feedback.clear();
             }
         });

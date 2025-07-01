@@ -35,8 +35,11 @@ impl GameLog {
                         if self.error_confirmation == false {
                             Color32::RED
                         }
-                        else {
+                        else if self.dark_mode { // Better Color For Dark Mode
                             Color32::GREEN
+                        }
+                        else { // Better Color For Light Mode
+                            Color32::DARK_GREEN
                         }
                     ))
                 );
