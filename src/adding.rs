@@ -1,6 +1,6 @@
 use eframe::egui::{self, Button, Checkbox, Label, RichText, TextEdit, Vec2};
 
-use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_file_operations::{save_to_file, Game}};
+use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_file_operations::{save_to_file, search_for_game, Game}};
 
 // "Adding" Window GUI Coded        
 
@@ -49,7 +49,8 @@ impl GameLog{
 
             ui.add_space(2.0);  
 
-            ui.add_sized(label_size,
+            // Confirmation/Error Messages are displayed here
+            ui.add_sized(Vec2::new(200.0, 20.0),
                     Label::new(RichText::new(&self.add_error_message)
                     .color(
                         if !self.add_confirmation {
@@ -67,43 +68,53 @@ impl GameLog{
 
                 ui.add_space(5.0);  
 
+                self.enabled = self.checked; // They are the same variable basically. Only seperate for purposes of readability
+                
                 ui.add_enabled_ui(self.enabled, |ui| {
                     if ui.add_sized(Vec2::new(150.0, 20.0), Button::new("Go"))
                         .clicked() {
+
                             self.add_confirmation = false; // Reset text colour to red, will be changed back to green if the process is successful again 
+
                             if !self.add_game_name.is_empty() && !self.add_game_rating.is_empty() // Making sure the user has inputted into the game name and ratings box (Notes is optional)
                             {
-                                match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
+                                match search_for_game(&self.game_file_contents, &self.add_game_name) // Make sure game isn't already in the log (Remind users who may have forgot)
                                 {
-                                    Ok(parsed) => {
-                                        if let Some(parsed_rating) = Rating::from_u8(parsed){ //Parsing into an enum
-                                            let date = get_date();
+                                    Ok(index) => self.add_error_message = format!{"Game is already in game log at index: {}", index},
 
-                                            let game = Game {
-                                                name: self.add_game_name.clone(),
-                                                rating: parsed_rating,
-                                                times_played: 1,
-                                                last_playthrough: date.to_string(),
-                                                notes: self.add_game_notes.clone(),
-                                            };
-
-                                            self.game_file_contents.push(game); // Add it to the vector so we can easily save it to the JSON file
-
-                                            match save_to_file(&self.game_file_contents)
+                                    Err(_) => match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
                                             {
-                                                Ok(_) => {
-                                                    println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
-                                                    self.add_error_message = format!("Game Added!"); // Remove any error messages previously acquired
-                                                    self.add_confirmation = true;
-                                                },
-                                                Err(_) => self.add_error_message = format!("There was an error when adding the game to the file"),
-                                            };
-                                        }
-                                        else {
-                                            self.add_error_message = format!("Invalid number entered!\nTry again buddy");
-                                        }
-                                    },
-                                    _ => self.add_error_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
+                                        Ok(parsed) => {
+                                            if let Some(parsed_rating) = Rating::from_u8(parsed) { //Parsing into an enum
+
+                                                let date = get_date();
+
+                                                let game = Game {
+                                                    name: self.add_game_name.clone(),
+                                                    rating: parsed_rating,
+                                                    times_played: 1,
+                                                    last_playthrough: date.to_string(),
+                                                    notes: self.add_game_notes.clone(),
+                                                };
+
+                                                self.game_file_contents.push(game); // Add it to the vector so we can easily save it to the JSON file
+
+                                                match save_to_file(&self.game_file_contents)
+                                                {
+                                                    Ok(_) => {
+                                                        println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
+                                                        self.add_error_message = format!("Game Added!"); // Remove any error messages previously acquired
+                                                        self.add_confirmation = true;
+                                                    },
+                                                    Err(_) => self.add_error_message = format!("There was an error when adding the game to the file"),
+                                                };
+                                            }
+                                            else {
+                                                self.add_error_message = format!("Invalid number entered!\nTry again buddy");
+                                            }
+                                        },
+                                        _ => self.add_error_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
+                                    }
                                 }
                             } else {
                                 self.add_error_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
@@ -115,7 +126,6 @@ impl GameLog{
                             self.add_game_notes.clear();
                         };
                 });
-                self.enabled = self.checked;
             });
         });
     }
