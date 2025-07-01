@@ -356,7 +356,7 @@ impl App for GameLog {
                             });
                     },
                     WindowOpened::Editing => {
-                            egui::Window::new("Verify Game")
+                            egui::Window::new("Editing Game")
                                 .min_width(300.0)
                                 .open(&mut open_window)
                                 .show(ctx, |ui| {
