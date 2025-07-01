@@ -1,5 +1,3 @@
-use std::borrow::{Borrow, BorrowMut};
-
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
 use crate::{editing::editing_gui, enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
@@ -32,7 +30,7 @@ pub struct GameLog {
     pub add_game_name: String,
     pub add_game_rating: String,
     pub add_game_notes: String,
-    pub add_error_message: String,
+    pub add_feedback_message: String,
     pub add_confirmation: bool
 
 
@@ -62,9 +60,9 @@ impl GameLog {
         let add_game_name = String::new();
         let add_game_rating = String::new();
         let add_game_notes = String::new();
-        let add_error_message = String::new();
+        let add_feedback_message = String::new();
         let add_confirmation = false; // Will be used for telling the feedback message what colour to be
-        
+
         Self { dark_mode: true, 
                 assets,
                 search_game,
@@ -79,7 +77,7 @@ impl GameLog {
                 add_game_name,
                 add_game_rating,
                 add_game_notes,
-                add_error_message,
+                add_feedback_message,
                 add_confirmation 
             }
     }

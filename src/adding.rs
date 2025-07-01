@@ -51,7 +51,7 @@ impl GameLog{
 
             // Confirmation/Error Messages are displayed here
             ui.add_sized(Vec2::new(200.0, 20.0),
-                    Label::new(RichText::new(&self.add_error_message)
+                    Label::new(RichText::new(&self.add_feedback_message)
                     .color(
                         if !self.add_confirmation {
                             egui::Color32::RED
@@ -80,7 +80,7 @@ impl GameLog{
                             {
                                 match search_for_game(&self.game_file_contents, &self.add_game_name) // Make sure game isn't already in the log (Remind users who may have forgot)
                                 {
-                                    Ok(index) => self.add_error_message = format!{"Game is already in game log at index: {}", index},
+                                    Ok(index) => self.add_feedback_message = format!{"Game is already in game log at index: {}", index},
 
                                     Err(_) => match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
                                             {
@@ -103,21 +103,21 @@ impl GameLog{
                                                 {
                                                     Ok(_) => {
                                                         println!("CREATED"); // Game is added to the game log (This will be on the GUI eventually and not the terminal)
-                                                        self.add_error_message = format!("Game Added!"); // Remove any error messages previously acquired
+                                                        self.add_feedback_message = format!("Game Added!"); // Remove any error messages previously acquired
                                                         self.add_confirmation = true;
                                                     },
-                                                    Err(_) => self.add_error_message = format!("There was an error when adding the game to the file"),
+                                                    Err(_) => self.add_feedback_message = format!("There was an error when adding the game to the file"),
                                                 };
                                             }
                                             else {
-                                                self.add_error_message = format!("Invalid number entered!\nTry again buddy");
+                                                self.add_feedback_message = format!("Invalid number entered!\nTry again buddy");
                                             }
                                         },
-                                        _ => self.add_error_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
+                                        _ => self.add_feedback_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
                                     }
                                 }
                             } else {
-                                self.add_error_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
+                                self.add_feedback_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
                             }
 
                             // Clear all inout boxes once the button is clicked and operations have been executed
