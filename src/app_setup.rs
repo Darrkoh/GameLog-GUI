@@ -12,13 +12,13 @@ pub struct GameLog {
     pub assets: Vec<egui::TextureHandle>,
     pub game_file_contents: Vec<Game>, // Grabbing Gamelog details from the JSON file
 
-    // Search Gamed
+    // Search Game
     pub search_game: String,
     pub last_searched_term: String, // Stores last input of "search_game" so input feedback messages can linger after search_game is cleared
     pub invalid_search_message: String, // Display a message telling users their game isnt found. This shouldn't be updated each frame but needs to be global hence its a field
-    search_result: Option<Vec<Game>>, // Store search results for games
+    pub search_result: Option<Vec<Game>>, // Store search results for games
 
-    // Opening External Windows
+    pub(crate) // Opening External Windows
     open_window: bool, // When this is true, code will execute to open a new window in the app
     current_window_opened: WindowOpened,
 
@@ -344,18 +344,13 @@ impl App for GameLog {
                             });
                     },
                     WindowOpened::Editing => {
-
-
-                            egui::Window::new("Editing Game Information")
+                            egui::Window::new("Verify Game")
                                 .open(&mut open_window)
                                 .show(ctx, |ui| {
                                         self.editing_gui(ui)
                                 });
-                        
                     },
                     WindowOpened::Removing => {
-                            
-
                             egui::Window::new("Removing Games")
                                 .open(&mut self.open_window)
                                 .show(ctx, |ui| {
@@ -375,6 +370,8 @@ impl App for GameLog {
                 self.current_window_opened = WindowOpened::Default;
                 self.checked = false; // This also changes the enabled variable
                 self.error_confirmation = false; // Error Messages will be red again (Default)
+                self.add_feedback_message.clear();;
+                self.editing_search_feedback.clear();
             }
         });
     }
