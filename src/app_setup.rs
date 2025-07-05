@@ -43,7 +43,8 @@ pub struct GameLog {
     pub edit_game_notes: String,
     pub increase_times_played: i32,
     pub editing_search_game_name: String,
-    pub editing_search_feedback: String
+    pub editing_search_feedback: String,
+    pub increment_times_played: u8
 }
 
 /// App settings on startup
@@ -88,6 +89,7 @@ impl GameLog {
         let increase_times_played = 0;
         let editing_search_game_name = String::new();
         let editing_search_feedback = String::new();
+        let increment_times_played: u8 = 0;
 
         
         Self { dark_mode: true, 
@@ -111,7 +113,8 @@ impl GameLog {
                 edit_game_notes,
                 increase_times_played,
                 editing_search_game_name,
-                editing_search_feedback
+                editing_search_feedback,
+                increment_times_played
             }
     }
 

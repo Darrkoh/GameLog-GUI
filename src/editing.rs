@@ -9,10 +9,12 @@ impl GameLog {
         let label_size= Vec2::new(ui.available_width(), 20.0); // IMPORTANT: Biggest Element needs to be the same width as the ui if centering vertically to ensure it's actually centered when resizing
         let input_box_size = Vec2::new(150.0, 20.0);
         let button_size = Vec2::new(100.0, 20.0);
+        let increment_button_size = Vec2::new(30.0, 20.0);
 
         ui.add_space(5.0);
 
         ui.vertical_centered( |ui| {
+
             ui.add_sized(label_size, Label::new(RichText::new("Enter Game You Are Editing")
                 .size(20.0)) // This is the text size, not the allocated space size
             );
@@ -64,16 +66,21 @@ impl GameLog {
                         }
                     };
             }
+
+
+
+
+
             // Once a game is found, Expand the window and add options for editing game information
             // This also allows us to hide these assets should the user search for an invalid game after, as well as seamlessly updating the current information
             if self.error_confirmation {
                 ui.add_space(20.0);
-                
-                let container_width = 300.0; // width to hold elements being held in a horizontal container
 
                 let game_found = self.search_result.as_ref().unwrap();
                 let game = &game_found[0];
 
+                let mut container_width = 50.0 + 50.0 + 10.0 + input_box_size.x + 10.0; // Width to hold elements being held in a horizontal container (Updates with each Layout to match the new space needed)
+                // NAME
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
                     Layout::centered_and_justified(Direction::LeftToRight),
@@ -103,6 +110,9 @@ impl GameLog {
                 
                 ui.add_space(5.0);
 
+                // RATING
+                container_width = 50.0 + 50.0 + 10.0 + input_box_size.x + 10.0;
+
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
                     Layout::centered_and_justified(Direction::LeftToRight),
@@ -131,6 +141,9 @@ impl GameLog {
 
                 ui.add_space(5.0);
 
+                // NOTES
+                container_width = 50.0 + 50.0 +  10.0 + input_box_size.x + 10.0;
+
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
                     Layout::centered_and_justified(Direction::LeftToRight),
@@ -141,8 +154,11 @@ impl GameLog {
                                 Label::new(RichText::new("Current Notes: "))
                             );
 
+                            // Truncating Long Game Notes here, as they appear on the home screen right behind the window anyway so all theyre really doing is messing up the layout
+                            let notes = Self::truncate_game_attributes(&game.notes, 10);
+                            
                             ui.add_sized(Vec2::new(50.0, 20.0),
-                                Label::new(RichText::new(&game.notes)
+                                Label::new(RichText::new(format!("{}", notes))
                                 .strong())
                             );
 
@@ -155,8 +171,64 @@ impl GameLog {
                             ui.add_space(10.0);
                         });
                 });
-                // ADD TIMES PLAYED INCREMENTOR (and a button)
+
+                ui.add_space(20.0);
+
+                // INCREMENTOR
+                container_width = 50.0 + 10.0 + increment_button_size.x + 10.0 + 20.0 + 10.0 + increment_button_size.x + input_box_size.x;
+
+                ui.allocate_ui_with_layout(
+                    Vec2::new(container_width, 20.0),
+                    Layout::centered_and_justified(Direction::LeftToRight),
+                    |ui| { 
+
+                        ui.horizontal(|ui| {
+                            ui.add_sized(Vec2::new(50.0, 20.0),
+                                Label::new(RichText::new("Increment Times Played: "))
+                            );
+
+                            ui.add_space(10.0);
+
+                            if ui
+                                .add_sized(increment_button_size, Button::new("-").min_size(increment_button_size))
+                                .clicked()
+                            {
+                                self.increment_times_played = self.increment_times_played.saturating_sub(1); // Saturating_Sub makes it so the number cant go below 0
+                            }
+
+                            ui.add_space(10.0);
+
+                            ui.add_sized(
+                                Vec2::new(20.0, 20.0),
+                                Label::new(format!("{}", self.increment_times_played)),
+                            );
+
+                            ui.add_space(10.0);
+
+                            if ui
+                                .add_sized(increment_button_size, Button::new("+").min_size(increment_button_size))
+                                .clicked()
+                                {
+                                self.increment_times_played += 1;
+                            }
+
+                            ui.add_space(input_box_size.x); // This will allow the general container to be the same approximate size as the other property changer rows. This allows us to put the Title and incrementor somewhat in line with the rest so it looks aesthetically pleasing. Obviously not exact but still looks good
+                        });
+                });
             }
         });
+    }
+
+    fn truncate_game_attributes (attribute: &str, desired_length: usize) -> String
+    { 
+        let mut attribute_string = attribute.to_string();
+
+        if attribute.len() > desired_length {
+
+            attribute_string.truncate(desired_length);
+            return attribute_string + "..."
+        }
+
+        return attribute_string
     }
 }
