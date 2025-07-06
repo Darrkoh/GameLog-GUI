@@ -53,11 +53,11 @@ impl GameLog{
             ui.add_space(2.0);  
 
             // Confirmation/Error Messages are displayed here
-            if !self.add_feedback_message.is_empty() {
+            if !self.feedback_message.is_empty() {
                 ui.add_sized(Vec2::new(200.0, 20.0),
-                        Label::new(RichText::new(&self.add_feedback_message)
+                        Label::new(RichText::new(&self.feedback_message)
                         .color(
-                            if self.error_confirmation == false {
+                            if self.error_confirmation == true {
                                 Color32::RED
                             }
                             else if self.dark_mode { // Better Color For Dark Mode
@@ -83,13 +83,13 @@ impl GameLog{
                     if ui.add_sized(Vec2::new(150.0, 20.0), Button::new("Go"))
                         .clicked() {
 
-                            self.error_confirmation = false; // Reset text colour to red, will be changed back to green if the process is successful again 
+                            self.error_confirmation = true; // Reset text colour to red, will be changed back to green if the process is successful again 
 
                             if !self.add_game_name.is_empty() && !self.add_game_rating.is_empty() // Making sure the user has inputted into the game name and ratings box (Notes is optional)
                             {
                                 match search_for_game(&self.game_file_contents, &self.add_game_name) // Make sure game isn't already in the log (Remind users who may have forgot)
                                 {
-                                    Ok(index) => self.add_feedback_message = format!{"Game is already in game log at index: {}", index},
+                                    Ok(index) => self.feedback_message = format!{"Game is already in game log at index: {}", index},
 
                                     Err(_) => match self.add_game_rating.trim().parse::<u8>() // Parsing into a number and dealing with potential errors
                                             {
@@ -112,21 +112,21 @@ impl GameLog{
                                                 {
                                                     Ok(_) => {
                                                         println!("CREATED"); // Game is added to the game log (Terminal Message)
-                                                        self.add_feedback_message = format!("Game Added!"); // Remove any error messages previously acquired
-                                                        self.error_confirmation = true;
+                                                        self.feedback_message = format!("Game Added!"); // Remove any error messages previously acquired
+                                                        self.error_confirmation = false;
                                                     },
-                                                    Err(_) => self.add_feedback_message = format!("There was an error when adding the game to the file"),
+                                                    Err(_) => self.feedback_message = format!("There was an error when adding the game to the file"),
                                                 };
                                             }
                                             else {
-                                                self.add_feedback_message = format!("Invalid number entered!\nTry again buddy");
+                                                self.feedback_message = format!("Invalid number entered!\nTry again buddy");
                                             }
                                         },
-                                        _ => self.add_feedback_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
+                                        _ => self.feedback_message = format!("Invalid rating entered!\nTry again buddy"), // Both this and the error on line 81 are because of a parse error, hence same error message
                                     }
                                 }
                             } else {
-                                self.add_feedback_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
+                                self.feedback_message = format!("You have missed some required boxes") // If users didn't fill in required boxes
                             }
 
                             // Clear all inout boxes once the button is clicked and operations have been executed

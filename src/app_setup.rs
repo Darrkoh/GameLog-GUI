@@ -26,12 +26,12 @@ pub struct GameLog {
     pub checked: bool, // Checkbox variable
     pub enabled: bool, // This isnt needed as i could replace it with checked, however i'm using it as an explain variable so the codes easier to read
     pub error_confirmation: bool, // For changing text colours and stuff in error messages. Will be true when no error
+     pub feedback_message: String,
 
     // Adding
     pub add_game_name: String,
     pub add_game_rating: String,
     pub add_game_notes: String,
-    pub add_feedback_message: String,
 
 
     // Removing
@@ -44,7 +44,9 @@ pub struct GameLog {
     pub increase_times_played: i32,
     pub editing_search_game_name: String,
     pub editing_search_feedback: String,
-    pub increment_times_played: u8
+    pub increment_times_played: u8,
+    pub editing_search_error_confirmation: bool,
+    pub editing_selected_index: usize
 }
 
 /// App settings on startup
@@ -69,16 +71,16 @@ impl GameLog {
         let open_window = false;
         let current_window_opened = WindowOpened::Default; // Tracks current window so the program knows what window to open
 
-        // Global Check Box Variable and Enable Button Variable (Wont be used for more than one page at a time)
+        // Global Variables (Wont be used for more than one page at a time)
         let checked = false;
         let enabled = checked;
+        let feedback_message = String::new();
+        let error_confirmation = true; // Will be used for telling the feedback message what colour to be
 
         // Adding
         let add_game_name = String::new();
         let add_game_rating = String::new();
         let add_game_notes = String::new();
-        let add_feedback_message = String::new();
-        let error_confirmation = false; // Will be used for telling the feedback message what colour to be
 
         // Removing
 
@@ -89,8 +91,9 @@ impl GameLog {
         let increase_times_played = 0;
         let editing_search_game_name = String::new();
         let editing_search_feedback = String::new();
-        let increment_times_played: u8 = 0;
-
+        let increment_times_played = 0;
+        let editing_selected_index = 0;
+        let editing_search_error_confirmation = true;
         
         Self { dark_mode: true, 
                 assets,
@@ -106,7 +109,7 @@ impl GameLog {
                 add_game_name,
                 add_game_rating,
                 add_game_notes,
-                add_feedback_message,
+                feedback_message,
                 error_confirmation,
                 edit_game_name,
                 edit_game_rating,
@@ -114,7 +117,9 @@ impl GameLog {
                 increase_times_played,
                 editing_search_game_name,
                 editing_search_feedback,
-                increment_times_played
+                increment_times_played,
+                editing_selected_index,
+                editing_search_error_confirmation
             }
     }
 
@@ -385,8 +390,8 @@ impl App for GameLog {
             {
                 self.current_window_opened = WindowOpened::Default;
                 self.checked = false; // This also changes the enabled variable
-                self.error_confirmation = false; // Error Messages will be red again (Default)
-                self.add_feedback_message.clear();
+                self.error_confirmation = true; // Error Messages will be red again (Default)
+                self.feedback_message.clear();
                 self.editing_search_feedback.clear();
             }
         });
