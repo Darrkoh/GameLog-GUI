@@ -1,4 +1,4 @@
-use eframe::egui::{Button, Color32, Direction, Label, Layout, RichText, TextEdit, Vec2};
+use eframe::egui::{Align, Button, Checkbox, Color32, Direction, Label, Layout, RichText, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, egui::Ui, json_file_operations::search_for_game};
 
@@ -175,7 +175,7 @@ impl GameLog {
                 ui.add_space(20.0);
 
                 // INCREMENTOR
-                container_width = 50.0 + 10.0 + increment_button_size.x + 10.0 + 20.0 + 10.0 + increment_button_size.x + input_box_size.x;
+                container_width = 10.0 + 10.0 + increment_button_size.x + 10.0 + 20.0 + 10.0 + increment_button_size.x + input_box_size.x;
 
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
@@ -215,7 +215,26 @@ impl GameLog {
                             ui.add_space(input_box_size.x); // This will allow the general container to be the same approximate size as the other property changer rows. This allows us to put the Title and incrementor somewhat in line with the rest so it looks aesthetically pleasing. Obviously not exact but still looks good
                         });
                 });
-            }
+
+                ui.add_space(40.0);
+                
+                // Confirma Edit
+                container_width = 30.0 + button_size.x + input_box_size.x;
+
+                ui.allocate_ui_with_layout(
+                    Vec2::new(container_width, 20.0),
+                    Layout::left_to_right(Align::Center),
+                    |ui| {
+                            ui.add_sized(Vec2::new(20.0, 20.0), Checkbox::new(&mut self.checked, "Are you sure you want to commit these edits?"));
+
+                            ui.add_space(20.0);
+
+                            ui.add_sized(button_size, Button::new("Confirm"));
+
+                            ui.add_space(input_box_size.x); // This will allow the general container to be the same approximate size as the other property changer rows. This allows us to put the Title and incrementor somewhat in line with the rest so it looks aesthetically pleasing. Obviously not exact but still looks good
+                    },
+                );
+            };
         });
     }
 
