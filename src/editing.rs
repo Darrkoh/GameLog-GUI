@@ -1,4 +1,4 @@
-
+// Crates/Imports
 use eframe::egui::{Align, Button, Checkbox, Color32, Direction, Label, Layout, RichText, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, clock::get_date, egui::Ui, enums::Rating, json_file_operations::{save_to_file, search_for_game, Game}};
@@ -306,6 +306,7 @@ impl GameLog {
         });
     }
 
+    // Make long strings that will be displayed smaller with an elipsis at the end
     fn truncate_game_attributes (attribute: &str, desired_length: usize) -> String
     { 
         let mut attribute_string = attribute.to_string();
