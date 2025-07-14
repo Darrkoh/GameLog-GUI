@@ -7,13 +7,6 @@
     "notes": "GREAT GAME (Played Genocide now)"
   },
   {
-    "name": "Minecraft",
-    "rating": "four",
-    "times_played": 11,
-    "last_playthrough": "2025-07-14",
-    "notes": "Endless creativity, fun with friends"
-  },
-  {
     "name": "Stardew Valley",
     "rating": "five",
     "times_played": 7,
@@ -432,5 +425,12 @@
     "times_played": 1,
     "last_playthrough": "2025-07-06",
     "notes": "ROFL"
+  },
+  {
+    "name": "Minecraft",
+    "rating": "two",
+    "times_played": 2,
+    "last_playthrough": "2025-07-14",
+    "notes": "Classic!"
   }
 ]

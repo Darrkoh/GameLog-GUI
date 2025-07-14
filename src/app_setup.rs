@@ -26,16 +26,17 @@ pub struct GameLog {
     pub checked: bool, // Checkbox variable
     pub enabled: bool, // This isnt needed as i could replace it with checked, however i'm using it as an explain variable so the codes easier to read
     pub error_confirmation: bool, // For changing text colours and stuff in error messages. Will be true when no error
-     pub feedback_message: String,
 
     // Adding
     pub add_game_name: String,
     pub add_game_rating: String,
     pub add_game_notes: String,
+    pub adding_feedback_message: String,
 
 
     // Removing
     pub remove_game_name: String,
+    pub removing_feedback_message: String,
 
     // Editing
     pub edit_game_name: String,
@@ -46,7 +47,8 @@ pub struct GameLog {
     pub editing_search_feedback: String,
     pub increment_times_played: u8,
     pub editing_search_error_confirmation: bool,
-    pub editing_selected_index: usize
+    pub editing_selected_index: usize,
+    pub editing_feedback_message: String,
 }
 
 /// App settings on startup
@@ -74,16 +76,17 @@ impl GameLog {
         // Global Variables (Wont be used for more than one page at a time)
         let checked = false;
         let enabled = checked;
-        let feedback_message = String::new();
         let error_confirmation = true; // Will be used for telling the feedback message what colour to be
 
         // Adding
         let add_game_name = String::new();
         let add_game_rating = String::new();
         let add_game_notes = String::new();
+        let adding_feedback_message = String::new();
 
         // Removing
         let remove_game_name = String::new();
+        let removing_feedback_message = String::new();
 
         // Editing
         let edit_game_name= String::new();
@@ -95,6 +98,7 @@ impl GameLog {
         let increment_times_played = 0;
         let editing_selected_index = 0;
         let editing_search_error_confirmation = true;
+        let editing_feedback_message = String::new();
         
         Self { dark_mode: true, 
                 assets,
@@ -110,9 +114,10 @@ impl GameLog {
                 add_game_name,
                 add_game_rating,
                 add_game_notes,
-                feedback_message,
+                adding_feedback_message,
                 error_confirmation,
                 remove_game_name,
+                removing_feedback_message,
                 edit_game_name,
                 edit_game_rating,
                 edit_game_notes,
@@ -121,7 +126,8 @@ impl GameLog {
                 editing_search_feedback,
                 increment_times_played,
                 editing_selected_index,
-                editing_search_error_confirmation
+                editing_search_error_confirmation,
+                editing_feedback_message
             }
     }
 
@@ -359,7 +365,6 @@ impl App for GameLog {
                 match self.current_window_opened // Each match statement will execute GUI code in the respective file for each window's display
                 {
                     WindowOpened::Adding => { 
-                        self.feedback_message.clear(); // This is incase users go from one menu to the next to make sure the message will be cleared between menus
                         egui::Window::new("Adding Games")
                         .open(&mut open_window)
                         .show(ctx, |ui| {
@@ -367,7 +372,6 @@ impl App for GameLog {
                         });
                     },
                     WindowOpened::Editing => {
-                        self.feedback_message.clear(); // This is incase users go from one menu to the next to make sure the message will be cleared between menus
                         egui::Window::new("Editing Game")
                             .min_width(300.0)
                             .open(&mut open_window)
@@ -376,7 +380,6 @@ impl App for GameLog {
                             });
                     },
                     WindowOpened::Removing => {
-                        self.feedback_message.clear();
                         egui::Window::new("Removing Games")
                             .min_width(300.0)
                             .open(&mut open_window)
@@ -397,7 +400,9 @@ impl App for GameLog {
                 self.current_window_opened = WindowOpened::Default;
                 self.checked = false; // This also changes the enabled variable
                 self.error_confirmation = true; // Error Messages will be red again (Default)
-                self.feedback_message.clear();
+                self.adding_feedback_message.clear();
+                self.editing_feedback_message.clear();
+                self.removing_feedback_message.clear();
                 self.editing_search_feedback.clear();
             }
         });

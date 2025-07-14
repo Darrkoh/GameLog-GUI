@@ -16,12 +16,14 @@ impl GameLog {
 
         ui.vertical_centered(|ui| {
 
+            // Title
             ui.add_sized(label_size, Label::new(RichText::new("Enter Game You Are Editing")
                 .size(20.0)) // This is the text size, not the allocated space size
             );
 
             ui.add_space(2.0);
             
+            // Search Box
             ui.add_sized(input_box_size, TextEdit::singleline(&mut self.editing_search_game_name)
                     .hint_text("Game Name (< 50 Char)")
                     .char_limit(50)
@@ -31,6 +33,7 @@ impl GameLog {
 
             ui.add_space(5.0);
 
+            // Feedback Message (Only visible when giving users feedback on their actions)
             if !self.editing_search_feedback.is_empty()
             {
                 ui.add_sized(label_size, Label::new(RichText::new(&self.editing_search_feedback)
@@ -52,6 +55,7 @@ impl GameLog {
 
             ui.add_space(2.0);
 
+            // Search Button
             if ui.add_sized(button_size, Button::new("Search")).clicked() {
                 self.editing_search_error_confirmation = true;
 
@@ -77,6 +81,7 @@ impl GameLog {
                 let game: &mut Game = &mut self.game_file_contents[self.editing_selected_index];
 
                 let mut container_width = 50.0 + 50.0 + 10.0 + input_box_size.x + 10.0; // Width to hold elements being held in a horizontal container (Updates with each Layout to match the new space needed)
+
                 // NAME
                 ui.allocate_ui_with_layout(
                     Vec2::new(container_width, 20.0),
@@ -210,9 +215,9 @@ impl GameLog {
                 ui.add_space(20.0);
                 
                 // Confirmation/Error Messages are displayed here
-                if !self.feedback_message.is_empty() {
+                if !self.editing_feedback_message.is_empty() {
                     ui.add_sized(Vec2::new(200.0, 20.0),
-                            Label::new(RichText::new(&self.feedback_message)
+                            Label::new(RichText::new(&self.editing_feedback_message)
                             .color(
                                 if self.error_confirmation {
                                     Color32::RED
@@ -250,7 +255,7 @@ impl GameLog {
                                         let game: &mut Game = &mut self.game_file_contents[self.editing_selected_index];
 
                                         if self.edit_game_name.is_empty() && self.edit_game_rating.is_empty() && self.edit_game_notes.is_empty() && (self.increment_times_played == 0) {
-                                            self.feedback_message = format!("Please Enter an Edit");
+                                            self.editing_feedback_message = format!("Please Enter an Edit");
                                         }
                                         else {
                                             if !self.edit_game_name.is_empty() {
@@ -287,7 +292,7 @@ impl GameLog {
                                             game.times_played = self.increment_times_played + game.times_played; // Save New times played
 
                                             // Save Edits
-                                            self.feedback_message = match save_to_file(&mut self.game_file_contents){
+                                            self.editing_feedback_message = match save_to_file(&mut self.game_file_contents){
                                                 Ok(_) => { 
                                                     self.error_confirmation = false;
                                                     format!("Edits Added")

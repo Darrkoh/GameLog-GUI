@@ -46,10 +46,10 @@ impl GameLog {
             ui.add_space(10.0);
 
             // Feedback Message On whether or not removal was successful
-            if !self.feedback_message.is_empty() {
+            if !self.removing_feedback_message.is_empty() {
                 ui.add_sized(
                 label_size,
-                Label::new(RichText::new(&self.feedback_message)
+                Label::new(RichText::new(&self.removing_feedback_message)
                     .size(20.0)
                     .color(
                         if self.error_confirmation {
@@ -73,7 +73,7 @@ impl GameLog {
                     .clicked() {
                         self.error_confirmation = true;
 
-                        self.feedback_message = match search_for_game(&self.game_file_contents, &self.remove_game_name) {
+                        self.removing_feedback_message = match search_for_game(&self.game_file_contents, &self.remove_game_name) {
                             Ok(i) => {
                                 self.game_file_contents.remove(i);
                                 // Save Edits
