@@ -1,4 +1,4 @@
-use eframe::egui::{Align, Button, Checkbox, Color32, Label, Layout, RichText, TextEdit, Vec2};
+use eframe::egui::{Align, Button, Checkbox, Color32, Label, RichText, TextEdit, Vec2};
 
 use crate::{app_setup::GameLog, egui::Ui, json_file_operations::{save_to_file, search_for_game}};
 
