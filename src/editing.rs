@@ -214,7 +214,7 @@ impl GameLog {
                     ui.add_sized(Vec2::new(200.0, 20.0),
                             Label::new(RichText::new(&self.feedback_message)
                             .color(
-                                if self.error_confirmation == true {
+                                if self.error_confirmation {
                                     Color32::RED
                                 }
                                 else if self.dark_mode { // Better Color For Dark Mode
