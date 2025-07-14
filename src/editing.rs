@@ -25,6 +25,7 @@ impl GameLog {
             ui.add_sized(input_box_size, TextEdit::singleline(&mut self.editing_search_game_name)
                     .hint_text("Game Name (< 50 Char)")
                     .char_limit(50)
+                    .horizontal_align(Align::Center)
                     .desired_width(input_box_size.x)
             );
 
@@ -66,9 +67,6 @@ impl GameLog {
                         }
                     };
             }
-
-
-
 
 
             // Once a game is found, Expand the window and add options for editing game information

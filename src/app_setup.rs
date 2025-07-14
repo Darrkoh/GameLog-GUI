@@ -1,6 +1,6 @@
 use eframe::{egui::{self, CentralPanel, Context, FontId, Layout, RichText, TextEdit, TextureHandle, TopBottomPanel}, App, Frame};
 use image::GenericImageView;
-use crate::{enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}, removing::removing_gui};
+use crate::{enums::WindowOpened, json_file_operations::{reading_json, search_for_game, Game}};
 
 
 /// Stores the application's state, including UI settings and user input.
@@ -35,7 +35,7 @@ pub struct GameLog {
 
 
     // Removing
-
+    pub remove_game_name: String,
 
     // Editing
     pub edit_game_name: String,
@@ -83,6 +83,7 @@ impl GameLog {
         let add_game_notes = String::new();
 
         // Removing
+        let remove_game_name = String::new();
 
         // Editing
         let edit_game_name= String::new();
@@ -111,6 +112,7 @@ impl GameLog {
                 add_game_notes,
                 feedback_message,
                 error_confirmation,
+                remove_game_name,
                 edit_game_name,
                 edit_game_rating,
                 edit_game_notes,
@@ -368,14 +370,14 @@ impl App for GameLog {
                                 .min_width(300.0)
                                 .open(&mut open_window)
                                 .show(ctx, |ui| {
-                                        self.editing_gui(ui)
+                                    self.editing_gui(ui)
                                 });
                     },
                     WindowOpened::Removing => {
                             egui::Window::new("Removing Games")
-                                .open(&mut self.open_window)
+                                .open(&mut open_window)
                                 .show(ctx, |ui| {
-                                        removing_gui(ui)
+                                    self.removing_gui(ui)
                                 });
                     },
                     WindowOpened::Default => { // This Will never be reached as it just exists as a default value
