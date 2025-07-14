@@ -46,6 +46,7 @@ pub fn save_to_file(game_log: &Vec<Game>) -> Result<(), Box<dyn std::error::Erro
 
     // Write back to file (overwrite)
     let mut file = OpenOptions::new()
+    .create(true)// If file doesn't exist, Create it
     .write(true)
     .truncate(true).
     open("src/GameLog.Json")?;
