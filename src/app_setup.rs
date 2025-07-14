@@ -359,27 +359,30 @@ impl App for GameLog {
                 match self.current_window_opened // Each match statement will execute GUI code in the respective file for each window's display
                 {
                     WindowOpened::Adding => { 
-                            egui::Window::new("Adding Games")
-                            .open(&mut open_window)
-                            .show(ctx, |ui| {
-                                self.adding_gui(ui)
-                            });
+                        self.feedback_message.clear(); // This is incase users go from one menu to the next to make sure the message will be cleared between menus
+                        egui::Window::new("Adding Games")
+                        .open(&mut open_window)
+                        .show(ctx, |ui| {
+                            self.adding_gui(ui)
+                        });
                     },
                     WindowOpened::Editing => {
-                            egui::Window::new("Editing Game")
-                                .min_width(300.0)
-                                .open(&mut open_window)
-                                .show(ctx, |ui| {
-                                    self.editing_gui(ui)
-                                });
+                        self.feedback_message.clear(); // This is incase users go from one menu to the next to make sure the message will be cleared between menus
+                        egui::Window::new("Editing Game")
+                            .min_width(300.0)
+                            .open(&mut open_window)
+                            .show(ctx, |ui| {
+                                self.editing_gui(ui)
+                            });
                     },
                     WindowOpened::Removing => {
-                            egui::Window::new("Removing Games")
-                                .min_width(300.0)
-                                .open(&mut open_window)
-                                .show(ctx, |ui| {
-                                    self.removing_gui(ui)
-                                });
+                        self.feedback_message.clear();
+                        egui::Window::new("Removing Games")
+                            .min_width(300.0)
+                            .open(&mut open_window)
+                            .show(ctx, |ui| {
+                                self.removing_gui(ui)
+                            });
                     },
                     WindowOpened::Default => { // This Will never be reached as it just exists as a default value
                             println!("All External Windows Closed")

@@ -20,7 +20,7 @@ pub struct Game {
 // Read a parse JSON from text file into a vector 
 pub fn reading_json() -> Vec<Game> // Result is wrapped around incase there is an error returned
 {
-    let file = File::open("src/GameLog.Json"); // Gets file contents
+    let file = File::open("GameLog.Json"); // Gets file contents
 
     let reader = match file {
         Ok(games) => BufReader::new(games),
@@ -46,10 +46,11 @@ pub fn save_to_file(game_log: &Vec<Game>) -> Result<(), Box<dyn std::error::Erro
 
     // Write back to file (overwrite)
     let mut file = OpenOptions::new()
-    .create(true)// If file doesn't exist, Create it
-    .write(true)
-    .truncate(true).
-    open("src/GameLog.Json")?;
+        .create(true)// If file doesn't exist, Create it
+        .write(true)
+        .truncate(true)
+        .open("GameLog.Json")?;
+
     file.write_all(new_json.as_bytes())?;
 
     Ok(())
