@@ -14,7 +14,7 @@ impl GameLog {
 
         ui.add_space(5.0);
 
-        ui.vertical_centered( |ui| {
+        ui.vertical_centered(|ui| {
 
             ui.add_sized(label_size, Label::new(RichText::new("Enter Game You Are Editing")
                 .size(20.0)) // This is the text size, not the allocated space size

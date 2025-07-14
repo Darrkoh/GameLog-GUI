@@ -375,6 +375,7 @@ impl App for GameLog {
                     },
                     WindowOpened::Removing => {
                             egui::Window::new("Removing Games")
+                                .min_width(300.0)
                                 .open(&mut open_window)
                                 .show(ctx, |ui| {
                                     self.removing_gui(ui)
