@@ -34,10 +34,14 @@ Game Log is designed for anyone who wants to maintain a history of their game ex
 
 ## 📌 Notes from the Developer
 
-> This app is fully functional and gets the job done, but currently undergoing updates to improve both the codebase (for better readability) and the UI (for a more user-friendly experience, as well as being more responsive). Feedback is welcome!
+> This app is fully functional and gets the job done, but currently undergoing updates to improve both the codebase (for better readability) and the UI (for a more user-friendly experience, as well as being more responsive). This was my first time using Rust and egui to create and app so it is not perfect. Feedback is welcome!
 
 ## 🔧 Installation
+You can download the v1.0.1 .exe file [here](https://github.com/Darrkoh/GameLog-GUI/releases/tag/v1.0.1)
 
+When you start to use the app a JSON file will be created. 
 
+**I heavily recommend putting both the .exe file and the JSON file inside a seperate directory together!** 
+They will need to be in the same directory at all times for the app to read and edit the file.
 
 ---
